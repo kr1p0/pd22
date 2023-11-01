@@ -1,0 +1,135 @@
+﻿@page
+@model PracaDyplomowa.Pages.Reminders.ViewReminderModel
+@{
+}
+
+@using PracaDyplomowa.Models
+
+<input type="hidden" asp-for="ReminderInfo.Id" />
+
+<ul class="nav nav-tabs mainNavTabs ">
+    <li class="nav-item ">
+        <a class="nav-link navItemMembers active" id=""
+           asp-route-selectedReminderId="@Model.ReminderInfo.Id"
+           asp-page="/Reminders/ViewReminder">Podgląd</a>
+    </li>
+    <li class="nav-item ">
+        <a class="nav-link navItemMembers" id=""
+           asp-route-selectedReminderId="@Model.ReminderInfo.Id"
+           asp-page="/Reminders/EditReminder">Edytuj</a>
+    </li>
+    <li class=" " style="margin-left: auto; margin-right: 0; ">
+        @if (User.IsInRole(Models.User.UserType.Standard))
+        {
+            <a class="nav-link goBackNavBarBtn" asp-page="/Restricted/RestrictedMain">
+                Wróć
+            </a>
+        }
+        else
+        {
+            <a class="nav-link goBackNavBarBtn" asp-page="/Reminders/RemindersOverview">
+                Wróć
+            </a>
+        }
+    </li>
+</ul>
+
+<div class="innerContainer2">
+
+
+    <div id="reminderViewWindow" class="m-3">
+        <div class="form-row justify-content-center " style="margin-top: 25px; margin-bottom:20px; width:100%">
+
+            <div class="row formPanelContainer justify-content-center">
+
+                <!--FIRST COLUMN-->
+                <div class="fitstFrom2Column">
+                    <div style="padding:3%">
+                        <img class="" style="width: 100%; " src="~/img/white/list-ul.svg">
+                    </div>
+                </div>
+
+                <!--SECOND COLUMN-->
+                <div class="secondFrom2Column">
+
+                    @{
+                        var background = @Model.ReminderInfo.TloHex;
+                        var foreground = @Model.ReminderInfo.CzcionkaHex;
+                    }
+
+                    <div class="row  justify-content-center " style="margin:-0.7em 0 2.8em 0">
+
+                        <input type="text" style="background-color:@background; color:@foreground;
+                            border:0;font-weight:600;font-size:1.3em; border-radius:0.35em; padding:0.1em 0.2em"
+                               class="text-center " id="PrzypomnienieTytul" asp-for="ReminderInfo.Tytul" readonly>
+                    </div>
+
+                    <div class="form-group mb-3 form-inline " style="margin-top:-12px">
+                        <label for="TypPowiadomienia" class="labelInline">Forma</label>
+                        @if (@Model.ReminderInfo.PowiadomienieEmail == "t")
+                        {
+                            <img class="mr-4 ml-4" style="height:29px" src="~/img/black/envelope-check.svg">
+                        }
+                        @if (@Model.ReminderInfo.PowiadomienieTelefon == "t")
+                        {
+                            <img class="" style="height:28px" src="~/img/black/phone-vibrate.svg">
+                        }
+                    </div>
+
+                    <hr />
+                    <br />
+
+                    <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                        <label for="PrzypomnienieTresc" class="mb-1 labelInline">Treść</label>
+                        <textarea class="form-control customFormInputReadOnly inputInline" id="PrzypomnienieTresc"
+                                  asp-for="ReminderInfo.Tresc" readonly rows="5"> </textarea>
+                    </div>
+
+                    <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                        <label for="PrzypDataRozpoczecia" class="mb-1 labelInline">Data</label>
+                        <input type="text" class="form-control customFormInputReadOnly inputInline" id="PrzypDataRozpoczecia"
+                               asp-for="ReminderInfo.DataRozpoczecia" readonly>
+                    </div>
+
+                    <div class="form-group  mb-1  form-inline " style="margin-top:-12px">
+                        <label for="PrzypCzasRozpoczecia" class="mb-1 labelInline">Czas</label>
+                        <input type="text" class="form-control customFormInputReadOnly inputInline" id="PrzypCzasRozpoczecia"
+                               asp-for="ReminderInfo.CzasRozpoczecia" readonly>
+                    </div>
+
+                     <hr />
+
+                         <div class="form-group form-inline justify-content-center">
+                                 <label for="addActionUserTable" class="mb-1 mt-3" style="font-weight: 600; font-size:1.1em;cursor:pointer" 
+                                data-toggle="collapse" data-target="#viewReminderRecipientsContainer" aria-expanded="false" aria-controls="viewReminderRecipientsContainer">
+                                ⌄ Adresaci </label>
+                                   <div class=" collapse show" id="viewReminderRecipientsContainer"  style=" width: 100%;">
+                                 @if(Model.ListOfUsers.Count == 0)
+                                    {
+                                        <p style="text-align:center;font-size:1.2em;color:#999">BRAK  </p>
+                                    }
+                                <table class="tableDefaultSm " id="viewReminderRecipients">
+                                <thead></thead>
+                                    @for (int i = 0; i < Model.ListOfUsers.Count; i++)
+                                        {
+                                            if (Model.ListOfReminderRecipients.Contains(Model.ListOfUsers[i].UzytkownikId))
+                                            {
+                                                <tbody>
+                                                    <tr class="" style=" cursor: pointer">
+                                                        <td data-label="">
+                                                            @CustomStr.Adjust(Model.ListOfUsers[i].Imie + " " + 
+                                                            Model.ListOfUsers[i].Nazwisko,20)
+                                                             <input type="hidden" value="@Model.ListOfUsers[i].UzytkownikId" readonly />
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            }
+                                        }
+                                </table>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

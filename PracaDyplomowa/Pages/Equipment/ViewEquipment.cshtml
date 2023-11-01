@@ -1,0 +1,162 @@
+﻿@page
+@model PracaDyplomowa.Pages.Equipment.ViewEquipmentModel
+@{
+
+}
+
+
+
+<body>
+    <input type="hidden" asp-for="selectedEquipmentId" />
+
+    <ul class="nav nav-tabs mainNavTabs ">
+        <li class="nav-item ">
+            <a class="nav-link navItemMembers active " id=""
+               asp-route-selectedEquipmentId="@Model.EquipmentObj.Id"
+               asp-page="/Equipment/ViewEquipment">Podgląd</a>
+        </li>
+        @if (User.IsInRole(Models.User.UserType.Admin))
+        {
+            <li class="nav-item ">
+                <a class="nav-link navItemMembers " id=""
+                    asp-route-selectedEquipmentId="@Model.EquipmentObj.Id"
+                    asp-page="/Equipment/EditEquipment">Edytuj</a>
+            </li>
+        }
+        <li class=" " style="margin-left: auto; margin-right: 0; ">
+            @if (User.IsInRole(Models.User.UserType.Standard))
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Restricted/RestrictedMain">
+                    Wróć
+                </a>
+            }
+            else
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Equipment/EquipmentOverview">
+                    Wróć
+                </a>
+            }
+        </li>
+    </ul>
+
+    <div class="innerContainer2">
+
+        <form method="post" id="viewEquipmentForm" class="displaySpinner">
+            <div id="viewEquipmentWindow" class="m-3">
+                <div class="form-row justify-content-center " style="margin-top: 25px; margin-bottom:20px; width:100%">
+
+                    <div class="row formPanelContainer justify-content-center">
+
+                        <!--FIRST COLUMN-->
+                        <div class="fitstFrom2Column">
+                            <div style="padding:3%">
+                                <img class="" style="width: 100%; "
+                                     src="~/img/white/extinguisher-fill.svg">
+                            </div>
+                        </div>
+
+                        <!--SECOND COLUMN-->
+                        <div class="secondFrom2Column">
+
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="widokSprzetProducent" class="mb-1 labelInline">Producent</label>
+                                <input type="text" class="form-control customFormInputReadOnly inputInline" id="widokSprzetProducent"
+                                       asp-for="EquipmentObj.Producent" readonly>
+                            </div>
+
+
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="widokSprzetModel" class="mb-1 labelInline">Model</label>
+                                <input type="text" class="form-control customFormInputReadOnly inputInline" id="widokSprzetModel"
+                                       asp-for="EquipmentObj.Model" readonly>
+                            </div>
+
+
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="widokSprzetSn" class="mb-1 labelInline">Nr seryjny</label>
+                                <input type="text" class="form-control customFormInputReadOnly inputInline" id="widokSprzetSn"
+                                       asp-for="EquipmentObj.Sn" readonly>
+                            </div>
+
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="widokSprzetIlosc" class="mb-1 labelInline">Ilość</label>
+                                <input type="number" class="form-control customFormInputReadOnly inputInline" id="widokSprzetIlosc"
+                                       asp-for="EquipmentObj.Ilosc" readonly>
+                            </div>
+
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="widokSprzetWartosc" class="mb-1 labelInline">Wartość</label>
+                                <input type="text" class="form-control customFormInputReadOnly inputInline" id="widokSprzetWartosc"
+                                       asp-for="EquipmentObj.Wartosc" readonly>
+                            </div>
+
+
+                            <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                                <label for="widokSprzetPrzeglad" class="mb-1 labelInline">Przegląd</label>
+                                <input type="date" class="form-control customFormInputReadOnly inputInline" id="widokSprzetPrzeglad"
+                                       asp-for="EquipmentObj.AktualnoscBadan" readonly>
+
+                            </div>
+
+
+                            <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                                <label for="widokSprzetZakupiono" class="mb-1 labelInline">Zakupiono</label>
+                                <input type="date" class="form-control customFormInputReadOnly inputInline" id="widokSprzetZakupiono"
+                                       asp-for="EquipmentObj.DataZakupu" readonly>
+
+                            </div>
+
+                            <div class="form-group  mb-1  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeDataZakonczenia" class="mb-1 labelInline">Typ</label>
+                                <input type="text" class="form-control customFormInputReadOnly inputInline" id="widokSprzetTyp"
+                                       asp-for="EquipmentObj.Typ" readonly>
+                            </div>
+
+                            <hr />
+
+                            <div class="form-group form-inline justify-content-center" >
+                                <label for="addActionUserTable" class="mb-1 mt-3" style="font-weight: 600; font-size:1.1em;cursor:pointer" 
+                                    data-toggle="collapse" data-target="#viewMembersAssignedToEquipmentTableContainer" aria-expanded="false" aria-controls="viewMembersAssignedToEquipmentTableContainer">
+                                    ⌄ Przypisany do członków </label>
+                                <div class=" collapse show" id="viewMembersAssignedToEquipmentTableContainer"  style=" width: 100%;">
+                                 @if(Model.MemebersAssignedToEquipment.Count == 0)
+                                    {
+                                        <p style="text-align:center;font-size:1.2em;color:#999">BRAK  </p>
+                                    }
+                                <table class="tableDefaultSm " id="viewMembersAssignedToEquipmentTable"> 
+                            
+                                    <thead></thead>
+                                    @for (int i = 0; i < Model.MemebersAssignedToEquipment.Count; i++)
+                                    {
+                                        <tbody>
+                                            <tr class="" style=" cursor: pointer">
+                                                <td data-label="">
+                                                    @Models.CustomStr.Adjust(Model.MemebersAssignedToEquipment[i].Imie + " " +
+                                                    Model.MemebersAssignedToEquipment[i].Nazwisko, 20)
+                                                    <input type="hidden" value="@Model.MemebersAssignedToEquipment[i].UzytkownikId" readonly />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    }
+                                </table>
+                                </div>
+
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(Model.EquipmentObj.ImgNazwa))
+                            {
+                                <hr />
+                                <div id="equipmentViewImgContainer">
+                                    <a href="~/uploads/img/equipment/@Model.EquipmentObj.ImgNazwa" target="_blank">
+                                        <img id="equipmentViewImg" src="~/uploads/img/equipment/@Model.EquipmentObj.ImgNazwa" />
+                                    </a>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>

@@ -1,0 +1,207 @@
+﻿@page
+@model PracaDyplomowa.Pages.Reminders.EditReminderModel
+@{
+}
+@using PracaDyplomowa.Models
+
+<!-- For Ajax-->
+@Html.AntiForgeryToken()
+
+<body onload="onloadEditReminder()">
+    <input type="hidden" asp-for="ReminderInfo.Id" id="reminderToEditId" />
+
+    <ul class="nav nav-tabs mainNavTabs ">
+        <li class="nav-item ">
+            <a class="nav-link navItemMembers " id=""
+               asp-route-selectedReminderId="@Model.ReminderInfo.Id"
+               asp-page="/Reminders/ViewReminder">Podgląd</a>
+        </li>
+        <li class="nav-item ">
+            <a class="nav-link navItemMembers active" id=""
+               asp-route-selectedReminderId="@Model.ReminderInfo.Id"
+               asp-page="/Reminders/EditReminder">Edytuj</a>
+        </li>
+        <li class=" " style="margin-left: auto; margin-right: 0; ">
+            @if (User.IsInRole(Models.User.UserType.Standard))
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Restricted/RestrictedMain">
+                    Wróć
+                </a>
+            }
+            else
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Reminders/RemindersOverview">
+                    Wróć
+                </a>
+            }
+        </li>
+    </ul>
+
+    <div class="innerContainer2">
+
+        <form method="post" id="editReminderForm" class="displaySpinner">
+            <div id="reminderViewWindow" class="m-3">
+                <div class="form-row justify-content-center " style="margin-top: 25px; margin-bottom:20px; width:100%">
+
+                    <div class="row formPanelContainer justify-content-center">
+
+                        <!--FIRST COLUMN-->
+                        <div class="fitstFrom2Column">
+                            <div class="fitstFrom2ColumnBtns">
+                                <div style="padding:3%">
+                                    <img class="" style="width: 100%; " src="~/img/white/list-ul.svg">
+                                </div>
+                                <div class="input-group justify-content-center mt-1">
+                                    <input type="submit" class="btn btn-light btn-sm m-1" value="Zapisz" />
+                                    <a id="" class="btn btn-light btn-sm m-1" asp-page-handler="HideReminder"
+                                       asp-route-selectedReminderId="@Model.ReminderInfo.Id" asp-page="/Reminders/EditReminder">
+                                        &nbsp;Usuń&nbsp;
+                                    </a>
+                                </div>
+                            </div>
+
+                            </div>
+
+                            <!--SECOND COLUMN-->
+                            <div class="secondFrom2Column">
+
+                                <!--ALTERNATIVE 4 FIRST COLUMN-->
+                                <div class="alternativeElement" >
+                                    <input type="submit" class="btn btn-light btn-sm mr-2" value="Zapisz" />
+                                    <a id="" class="btn btn-sm btn-light m-1" asp-page-handler="HideReminder"
+                                       asp-route-selectedReminderId="@Model.ReminderInfo.Id" asp-page="/Reminders/EditReminder">
+                                        &nbsp;Usuń&nbsp;
+                                    </a>
+                                </div>
+                                <!--ALTERNATIVE-->
+
+
+                                <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                    <label for="EPrzypomnienieTytul" class="mb-1 labelInline">Tytuł</label>
+                                    <input type="text" class="form-control customFormInputv2 inputInline" id="EPrzypomnienieTytul"
+                                           asp-for="ReminderInfo.Tytul">
+                                </div>
+
+
+                                <div class="form-group mb-0 form-inline " style="margin-top:-12px">
+                                    <label for="EPrzypomnienieTresc" class="mb-1 labelInline">Treść</label>
+                                    <textarea class="form-control customFormInputv2 inputInline" id="EPrzypomnienieTresc"
+                                              asp-for="ReminderInfo.Tresc" rows="5"> </textarea>
+                                </div>
+
+                                <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                                    <label for="EPrzypDataRozpoczecia" class="mb-1 labelInline">Data</label>
+                                    <input type="date" class="form-control customFormInputv2 inputInline" id="EPrzypDataRozpoczecia"
+                                           asp-for="ReminderInfo.DataRozpoczecia" required>
+                                </div>
+
+                                <div class="form-group  mb-4 form-inline " style="margin-top:-12px">
+                                    <label for="EPrzypCzasRozpoczecia" class="mb-1 labelInline">Czas</label>
+                                    <input type="time" class="form-control customFormInputv2 inputInline" id="EPrzypCzasRozpoczecia"
+                                           asp-for="ReminderInfo.CzasRozpoczecia" required>
+                                </div>
+
+                                <div class=" mb-4 reminderCheckBoxDiv" >
+                                    <div class="form-group   mb-1 form-inline " style="margin-top:-12px;">
+                                        <label for="powMailCheck" class="labelInline">Email</label>
+                                        @if (Model.ReminderInfo.PowiadomienieEmail == "t")
+                                        {
+                                            <input type="checkbox" class="form-group  inputInline" id="powMailCheck"
+                                                   style="" value="checked" name="checkBox1" checked
+                                                   onclick="userListForReminderEditVisibility()" />
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" class="form-group customFormInputv2 inputInline" id="powMailCheck"
+                                                   style="" value="checked" name="checkBox1"
+                                                   onclick="userListForReminderEditVisibility()" />
+                                        }
+                                    </div>
+
+                                   
+
+                                    <div class="form-group mb-4 form-inline pb-2" style="margin-top:-4px ;">
+                                        <label for="powTelefonCheck" class="labelInline">Web push</label>
+                                        @if (Model.ReminderInfo.PowiadomienieTelefon == "t")
+                                        {
+                                            <input type="checkbox" class="" id="powTelefonCheck"
+                                                   style="" value="checked" name="checkBox2" checked
+                                                   onclick="userListForReminderEditVisibility()" />
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" class="" id="powTelefonCheck"
+                                                   style="" value="checked" name="checkBox2"
+                                                   onclick="userListForReminderEditVisibility()" />
+                                        }
+                                    </div>
+                                </div>
+                               
+
+                                <div class="form-group form-inline justify-content-center" style="margin-top:-12px" id="hiddenReminderListOfUser">
+
+                                
+                                <label for="addActionUserTable" class="mb-1 mt-3" style="font-weight: 600; font-size:1.1em;cursor:pointer" 
+                                data-toggle="collapse" data-target="#editReminderUserTableContainer" aria-expanded="false" aria-controls="editReminderUserTableContainer">
+                                ⌄ Adresaci </label>
+
+                                    <div class=" collapse show" id="editReminderUserTableContainer"  style=" width: 100%;">
+                                 @if(Model.ListOfUsers.Count == 0)
+                                    {
+                                        <p style="text-align:center;font-size:1.2em;color:#999">BRAK  </p>
+                                    }
+                                    <table id="editReminderUserTable" class="tableDefaultSm ">
+                                        <thead></thead>
+                                        @{
+                                            for (int i = 0; i < Model.ListOfUsers.Count; i++)
+                                            {
+                                                if (@Model.ListOfUsers[i].Zatwierdzony == "n")
+                                                {
+                                                    continue;
+                                                }
+                                                 var conditionClass = Model.ListOfReminderRecipients.Contains(Model.ListOfUsers[i].UzytkownikId) 
+                                                ? "selectedTableSmRow" : "";
+                                                <tbody>
+                                                    <tr class="@conditionClass" style=" cursor: pointer" onclick="updateTableCheckBox(this,'editReminderUserTable')">
+
+                                                        <td data-label="Dodaj odbiorce" style="width:0">
+                                                            @if (Model.ListOfReminderRecipients.Contains(Model.ListOfUsers[i].UzytkownikId))
+                                                            {
+                                                                <input type="checkbox" checked id="editReminderCheckBox"
+                                                                       onclick="return false;" style="display:none" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="checkbox" id="editReminderCheckBox"
+                                                                       onclick="return false;" style="display:none" />
+                                                            }
+                                                        </td>
+
+                                                        <td style="display:none">
+                                                            <input type="hidden" value="@Model.ListOfUsers[i].UzytkownikId" readonly />
+                                                        </td>
+
+                                                        <td style="display:none">
+                                                            <input type="hidden" value="@Model.ListOfUsers[i].Jednostka_id" readonly />
+                                                        </td>
+
+                                                        <td data-label="">
+                                                            @(CustomStr.Adjust(Model.ListOfUsers[i].Imie)+"  ")
+                                                            @CustomStr.Adjust(Model.ListOfUsers[i].Nazwisko)
+                                                        </td>
+
+
+                                                    </tr>
+                                                </tbody>
+                                            }
+                                        }
+                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>

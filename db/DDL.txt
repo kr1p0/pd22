@@ -1,0 +1,409 @@
+--ALTER SESSION SET SKIP_UNUSABLE_INDEXES=TRUE
+--ALTER SESSION SET TIME_ZONE = 'Europe/Zurich';
+--SELECT CURRENT_timestamp, SESSIONTIMEZONE FROM DUAL;
+
+drop table "OSP_JEDNOSTKA" cascade constraints PURGE;
+drop table "OSP_UZYTKOWNIK" cascade constraints PURGE;
+drop table "OSP_TEMPHASH" cascade constraints PURGE;
+--drop table "OSP_SPRZET" cascade constraints PURGE;
+drop table "OSP_KALENDARZ" cascade constraints PURGE;
+drop table "OSP_ZAWODY_UCZESTNIK" cascade constraints PURGE;
+drop table "OSP_ZAWODY" cascade constraints PURGE;
+drop table "OSP_KSIEGOWOSC" cascade constraints PURGE;
+drop table "OSP_INWENTARZ" cascade constraints PURGE;
+drop table "OSP_SAMOCHODY" cascade constraints PURGE;
+drop table "OSP_AKCJA_UCZESTNIK" cascade constraints PURGE;
+drop table "OSP_AKCJE" cascade constraints PURGE;
+drop table "OSP_STATUS_UPDATE" cascade constraints PURGE;
+drop table "OSP_PRZYPOMNIENIE_ADRESAT" cascade constraints PURGE;
+--drop table "OSP_FINANSE" cascade constraints PURGE;
+drop table "OSP_FINANSE_TRANSAKCJE" cascade constraints PURGE;
+drop table "OSP_CHAT" cascade constraints PURGE;
+drop table "OSP_OGLOSZENIE" cascade constraints PURGE;
+drop table "OSP_UZYTKOWNIK_PRZYPISANY_SPRZET" cascade constraints PURGE;
+drop table "OSP_UZYTKOWNIK_KURSY" cascade constraints PURGE;
+
+
+drop trigger "UZYTKOWNIK_NOWY_STATUS";
+
+
+
+CREATE TABLE osp_jednostka
+(
+jednostka_id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+nazwa_jednostki varchar (50) NOT NULL,
+PRIMARY KEY (jednostka_id)
+);
+
+
+
+CREATE TABLE osp_uzytkownik
+(
+uzytkownik_id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+jednostka_id int NOT NULL,
+typ_konta varchar(15) NOT NULL,
+imie varchar(25) NOT NULL,
+nazwisko varchar (30) NOT NULL,
+ulica varchar (30),
+miejscowosc varchar (30),
+kod_pocztowy varchar (10),
+email varchar (70) NOT NULL,
+haslo varchar (70) NOT NULL,
+sol varchar (66),
+telefon varchar (15)NULL,
+funkcja varchar(25)NULL,
+czas_pracy varchar(25)NULL,
+data_wstapienia DATE ,
+zatwierdzony char(1) NOT NULL,
+status varchar (15),
+waznosc_badan DATE,
+img_nazwa varchar (50),
+data_utworzenia TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+CONSTRAINT osp_uzytkownik_email_Unique UNIQUE (email),
+PRIMARY KEY (uzytkownik_id)
+);
+
+
+CREATE TABLE osp_tempHash (
+    id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+    uzytkownik_id int NOT NULL,
+    hash_string VARCHAR2(305) NOT NULL,
+    data_utworzenia TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+);
+
+--CREATE TABLE osp_sprzet (
+--    id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+--    jednostka_id int NOT NULL,
+--    nazwa VARCHAR2(50) NOT NULL,
+--   PRIMARY KEY (id)
+--);
+
+CREATE TABLE osp_kalendarz (
+    id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+    uzytkownik_id int,
+    sprzet_id int,
+    jednostka_id int NOT NULL,
+    tytul VARCHAR2(100),
+    tresc CLOB,
+    data_rozpoczecia DATE,
+    czas_rozpoczecia TIMESTAMP,
+    powiadomienie_email char(1) NOT NULL,
+    powiadomienie_telefon char(1) NOT NULL,
+    tlo_kolor_hex VARCHAR2(10),
+    czcionka_kolor_hex VARCHAR2(10),
+    PRIMARY KEY (id)
+);
+
+
+
+alter table osp_uzytkownik
+add constraint nazwa_jednostki_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+
+alter table osp_tempHash
+add constraint osp_tempHash_fk foreign key (uzytkownik_id) references osp_uzytkownik(uzytkownik_id);
+
+--alter table osp_sprzet
+--add constraint osp_sprzet_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+
+alter table osp_kalendarz
+add constraint osp_kalendarz_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+
+alter table osp_kalendarz
+add constraint kalendarz_uzytkownik_id_fk foreign key (uzytkownik_id) references osp_uzytkownik(uzytkownik_id);
+
+
+
+
+
+
+
+
+
+CREATE TABLE osp_akcje
+(
+   id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+   jednostka_id int NOT NULL,
+   typ_zdarzenia VARCHAR(40),
+   --data_zdarzenia DATE ,
+   czas_zdarzenia TIMESTAMP, 
+   --data_zakonczenia DATE,
+   czas_zakonczenia TIMESTAMP,
+   ilosc_uczestnikow int,
+   lokalizacja varchar(120),
+   PRIMARY KEY (id)
+);
+
+CREATE TABLE osp_akcja_uczestnik
+(
+   id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+   akcja_id int NOT NULL,
+   uzytkownik_id int NOT NULL, 
+   PRIMARY KEY (id)
+);
+
+CREATE TABLE osp_przypomnienie_adresat
+(
+   id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+   przypomnienie_id int NOT NULL,
+   uzytkownik_id int NOT NULL, 
+   PRIMARY KEY (id)
+);
+
+CREATE TABLE osp_samochody
+(
+   id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+   jednostka_id int NOT NULL,
+   producent VARCHAR(30) NOT NULL, 
+   nazwa_modelu VARCHAR(30) NOT NULL, 
+   rejestracja VARCHAR(15),
+   data_zakupu DATE,
+   badania_koniec DATE,
+   PRIMARY KEY (id)
+);
+
+CREATE TABLE osp_inwentarz
+(
+   id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+   jednostka_id int NOT NULL,
+   producent VARCHAR(30) NOT NULL, 
+   nazwa_modelu VARCHAR(30), 
+   sn VARCHAR(30),
+   ilosc int,
+   wartosc VARCHAR(20),
+   typ VARCHAR(40),
+   badania_koniec DATE,
+   data_zakupu DATE,
+   img_nazwa varchar (50),
+   PRIMARY KEY (id)
+);
+
+--CREATE TABLE osp_ksiegowosc
+--(
+--   id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+--   jednostka_id int NOT NULL,
+--   dokument_nr VARCHAR(30) NOT NULL, 
+--   rodzaj VARCHAR(20), --wplata/wyplata 
+--   tytul VARCHAR(30),
+--   kontrahent  VARCHAR(30),
+--   data_wystawienia DATE,
+--   kwota VARCHAR(20),
+--  szczegoly VARCHAR(150),
+--   PRIMARY KEY (id)
+--);
+
+
+CREATE TABLE osp_zawody
+(
+   id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+   jednostka_id int NOT NULL,
+   szczebel VARCHAR(30), 
+   kategoria VARCHAR(30), 
+   ilosc_uczestnikow int,
+   zajete_miejsce int,
+   data DATE ,
+   PRIMARY KEY (id)
+);
+
+CREATE TABLE osp_zawody_uczestnik
+(
+   id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+   zawody_id int NOT NULL,
+   uzytkownik_id int NOT NULL, 
+   rola VARCHAR(25), 
+   PRIMARY KEY (id)
+);
+
+
+CREATE TABLE osp_uzytkownik_przypisany_sprzet
+(
+   id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+   uzytkownik_id int NOT NULL, 
+   sprzet_id int NOT NULL, 
+   ilosc int,
+   PRIMARY KEY (id)
+);
+
+alter table osp_uzytkownik_przypisany_sprzet
+add constraint przypisany_sprzet_uzytkownik_id_fk foreign key (uzytkownik_id) references osp_uzytkownik(uzytkownik_id);
+
+alter table osp_uzytkownik_przypisany_sprzet
+add constraint przypisany_sprzet_sprzet_id_fk foreign key (sprzet_id) references osp_inwentarz(id);
+
+
+alter table osp_akcje
+add constraint nazwa_jednostki_akcje_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+
+alter table osp_akcja_uczestnik
+add constraint akcja_id_uczestnik_akcji_fk foreign key (akcja_id) references osp_akcje(id);
+
+alter table osp_akcja_uczestnik
+add constraint uzytkownik_id_uczestnik_akcji_fk foreign key (uzytkownik_id) references osp_uzytkownik(uzytkownik_id);
+
+alter table osp_samochody
+add constraint nazwa_jednostki_samochody_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+
+alter table osp_inwentarz
+add constraint nazwa_jednostki_sprzet_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+
+alter table osp_ksiegowosc
+add constraint nazwa_jednostki_ksiegowosc_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+
+alter table osp_zawody
+add constraint nazwa_jednostki_zawody_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+
+alter table osp_zawody_uczestnik
+add constraint zawody_id_uczestnik_fk foreign key (zawody_id) references osp_zawody(id);
+
+alter table osp_zawody_uczestnik
+add constraint uzytkownik_id_uczestnik_fk foreign key (uzytkownik_id) references osp_uzytkownik(uzytkownik_id);
+
+alter table osp_przypomnienie_adresat
+add constraint przypomnienie_id_adresat_fk foreign key (przypomnienie_id) references osp_kalendarz(id);
+
+alter table osp_przypomnienie_adresat
+add constraint uzytkownik_id_przypomnienie_adresat_fk foreign key (uzytkownik_id) references osp_uzytkownik(uzytkownik_id);
+
+alter table osp_kalendarz
+add constraint kalendarz_sprzet_id_fk foreign key (sprzet_id) references osp_inwentarz(id);
+
+CREATE TABLE osp_status_update
+(
+   id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+   jednostka_id int NOT NULL,
+   uzytkownik_id int NOT NULL, 
+   nowy_status VARCHAR(15), 
+   data_zmiany TIMESTAMP,
+   PRIMARY KEY (id)
+);
+
+alter table osp_status_update
+add constraint nazwa_jednostki_stat_update_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+
+alter table osp_status_update
+add constraint uzytkownik_id_stat_update_fk foreign key (uzytkownik_id) references osp_uzytkownik(uzytkownik_id);
+
+
+
+
+
+
+
+--CREATE TABLE osp_finanse
+--(
+--id int ,
+--jednostka_id int NOT NULL,
+--kwota NUMBER(10,2) NOT NULL,
+--PRIMARY KEY (id)
+--);
+
+
+CREATE TABLE osp_finanse_transakcje
+(
+id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+jednostka_id int NOT NULL,
+dokument varchar(30),
+opis varchar(100),
+kwota NUMBER(10,2) NOT NULL,
+typ_transakcji varchar(20),
+odbiorca varchar(30),
+zrodlo varchar(30),
+data_transakcji DATE,
+aktualna_suma NUMBER(10,2),
+PRIMARY KEY (id)
+);
+
+
+--alter table osp_finanse
+--add constraint finanse_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+
+alter table osp_finanse_transakcje
+add constraint finanse_transakcje_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+
+
+
+
+
+
+CREATE TABLE osp_chat
+(
+id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+jednostka_id int NOT NULL,
+uzytkownik_id int NOT NULL,
+tresc CLOB,
+data_utworzenia TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY (id)
+);
+
+alter table osp_chat
+add constraint chat_jednostka_id_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+
+alter table osp_chat
+add constraint chat_uzytkownik_id_fk foreign key (uzytkownik_id) references osp_uzytkownik(uzytkownik_id);
+
+
+
+CREATE TABLE osp_ogloszenie (
+    id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+    jednostka_id int NOT NULL,
+    tytul VARCHAR2(250),
+    tresc CLOB,
+    czas_rozpoczecia TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    tlo_kolor_hex VARCHAR2(10),
+    czcionka_kolor_hex VARCHAR2(10),
+    autor varchar (60),
+    dokument_nazwa varchar (50),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE osp_uzytkownik_kursy 
+(
+    id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+    jednostka_id int NOT NULL,
+    uzytkownik_id int NOT NULL,
+    kurs varchar(100),
+    data_ukonczenia DATE,
+    waznosc_kursu DATE
+);
+
+alter table osp_ogloszenie
+add constraint osp_ogloszenie_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+
+alter table osp_uzytkownik_kursy 
+add constraint uzytkownik_kursy_jednostka_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+
+alter table osp_uzytkownik_kursy 
+add constraint uzytkownik_kursy_uzytkownik_id_fk foreign key (uzytkownik_id) references osp_uzytkownik(uzytkownik_id);
+
+
+
+
+
+Create or replace trigger Uzytkownik_nowy_status
+AFTER update of status
+on OSP_UZYTKOWNIK
+FOR each row
+BEGIN
+IF updating and :new.status != :old.status then
+DELETE FROM osp_status_update WHERE uzytkownik_id = :old.uzytkownik_id;
+INSERT INTO osp_status_update (jednostka_id,uzytkownik_id,nowy_status,data_zmiany )
+values
+(:old.jednostka_id,:old.uzytkownik_id, :new.status, sysdate);
+END IF;
+EXCEPTION 
+WHEN DUP_VAL_ON_INDEX THEN 
+ dbms_output.put_line('Zduplikowane wartosci'); 
+ WHEN OTHERS THEN
+ dbms_output.put_line
+ ('err_Kod:' || sqlcode);
+ dbms_output.put_line
+ ('err_komunikat:' || sqlerrm);
+ dbms_output.put_line
+ ('err_zrodlo' ||
+ dbms_utility.format_error_backtrace);
+END;
+/
+
+
+
+

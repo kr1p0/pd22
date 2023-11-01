@@ -1,0 +1,244 @@
+﻿@page
+@model PracaDyplomowa.Pages.Notifications.NotificationsOverviewModel
+@{
+}
+
+@using PracaDyplomowa.Models;
+
+<input class="backendALert" type="hidden" runat="server" value="@Model.passAlert">
+
+<body onload="onloadNotification()">
+
+    <div class="upperMenuBar">
+        <div class="dropdown">
+            <button class="btn btn-light btn-sm dropdown-toggle dropdownMenuMenuBar" type="button"
+                    data-toggle="dropdown" aria-expanded="false">
+             
+            </button>
+            <div class="dropdown-menu shadow p-3" aria-labelledby="dropdownMenuButton"
+                 style="background-color: #f0f2f5; border: solid thin #d0d2d5 ">
+                <form method="post">
+                    <p class=" bg-dark text-white p-1" style="border-radius:4px">Filtruj:</p>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="NotiCustomRadioFilter1" name="NotiCustomRadioFilter"
+                               class="custom-control-input" value="status" checked>
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="NotiCustomRadioFilter1">Zmiana statusu</label>
+                    </div>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="NotiCustomRadioFilter2" name="NotiCustomRadioFilter"
+                               class="custom-control-input" value="confirmation" >
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="NotiCustomRadioFilter2">Oczekujące konta</label>
+                    </div>
+                    <div class="custom-control custom-radio mb-3">
+                        <input type="radio" id="NotiCustomRadioFilter3" name="NotiCustomRadioFilter"
+                               class="custom-control-input" value="all" checked>
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="NotiCustomRadioFilter3">Wyswietl wszystkie</label>
+                    </div>
+
+                    <p class="bg-dark text-white p-1 " style="border-radius:4px">Sortuj:</p>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="NotiCustomRadioSort1" name="NotiCustomRadioSort" value="name"
+                               class="custom-control-input">
+                        <label class="custom-control-label" for="NotiCustomRadioSort1">Imie<span style="font-size:0.7em">/Producent</span></label>
+                    </div>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="NotiCustomRadioSort2" name="NotiCustomRadioSort" value="lastName"
+                               class="custom-control-input">
+                        <label class="custom-control-label" for="NotiCustomRadioSort2">Nazwisko<span style="font-size:0.7em">/Model</span></label>
+                    </div>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="NotiCustomRadioSort3" name="NotiCustomRadioSort" value="email"
+                               class="custom-control-input" >
+                        <label class="custom-control-label" for="NotiCustomRadioSort3">Email</label>
+                    </div>
+                    <div class="custom-control custom-radio mb-3">
+                        <input type="radio" id="NotiCustomRadioSort4" name="NotiCustomRadioSort" value="date"
+                               class="custom-control-input" checked>
+                        <label class="custom-control-label" for="NotiCustomRadioSort4">Data</label>
+                    </div>
+
+                    <input type="submit" style="width:100%" class="btn btn-dark" value="Zapisz"
+                           asp-page-handler="SaveDisplayOptions" />
+                </form>
+            </div>
+        </div>
+
+        <div style="width:100%">
+            <input type="search" id="searchNotificationOverviewInput" placeholder="Szukaj"
+                   style="float: right; width: 40%; min-width: 58px;"
+                   class="btn btn-sm btn-light" oninput="searchNotifiOverview()" />
+        </div>
+    </div>
+
+    <div class="innerContainerMembers" overflow-x: auto;>
+
+
+        @{
+            if (Model.ListOfNoti.Count == 0)
+            {
+                <div class="row  justify-content-center mt-4" style="width:100%">
+                    <h3> BRAK POWIADOMIEŃ </h3>
+                </div>
+
+                return;
+            }
+        }
+
+        <table id="notificationTable" class="tableDefault seperateRow"  style=" overflow-x: auto;">
+            <thead>
+               
+                <tr style="position: sticky; top: 0; background-color:transparent ;z-index:2">
+                    <th scope="col">Lp.</th>
+                    <th scope="col">Imię<span style="font-size:0.7em">/Producent</span></th>
+                    <th scope="col">Nazwisko<span style="font-size:0.7em">/Model</span></th>
+                    <th scope="col">Email<span style="font-size:0.7em">/Sn</span></th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Dotyczy</th>
+                    <th scope="col">Akcja</th>
+                </tr>
+                
+            </thead>
+
+
+            @{
+                for (int i = 0; i < Model.ListOfNoti.Count; i++)
+                {
+                    var dotyczy = Model.ListOfNoti[i].Dotyczy == Models.NotificationType.UpdatedStatus ?
+                        Model.ListOfNoti[i].Dotyczy + ": " + Model.ListOfNoti[i].NowyStatus : Model.ListOfNoti[i].Dotyczy;
+                    var fontHex = "#000";
+                    var backgroundHex = "#fff";
+
+                    if(Model.ListOfNoti[i].Dotyczy == Models.NotificationType.OverdueUserDeadline
+                    || Model.ListOfNoti[i].Dotyczy == Models.NotificationType.OverdueEquipmentDeadline)
+                    {
+                        backgroundHex = "#ff096c";
+                         
+                    }
+                    else if(Model.ListOfNoti[i].Dotyczy == Models.NotificationType.FewDaysLeftEquipmentDeadline
+                        || Model.ListOfNoti[i].Dotyczy == Models.NotificationType.FewDaysLeftUserDeadline)
+                    {
+                        backgroundHex = "#f7ac81";
+                       
+                    }
+                                  
+                    else if(Model.ListOfNoti[i].Dotyczy == Models.NotificationType.UpdatedStatus)
+                    {
+                        backgroundHex = "#bcc5af";
+                    }
+
+                                                   
+                    else if(Model.ListOfNoti[i].Dotyczy == Models.NotificationType.AwaitingApproval)
+                    {
+                        backgroundHex = "#ff096c";
+                    }
+                
+                
+
+                    <tbody>
+                        <tr class="bg-white" >
+                            <td style="color:@fontHex;position:relative" data-label="">
+                                <span style="height:100%;width:8px;background-color:@backgroundHex; 
+                                    position:absolute;top:0;left:0;border-radius:4px;margin-right:"></span>
+                                <span style="margin-left:4px">@(i+1)</span>
+                            </td>
+
+                            <td data-label="Imię">@CustomStr.Adjust(Model.ListOfNoti[i].Imie)</td>
+
+                            <td data-label="Nazwisko">@CustomStr.Adjust(Model.ListOfNoti[i].Nazwisko)</td>
+
+                            <td data-label="Email">@CustomStr.Adjust(Model.ListOfNoti[i].Email)</td>
+
+                            <td data-label="Data">@CustomStr.Adjust(Model.ListOfNoti[i].DataUtworzenia, 20)</td>
+                       
+                            @if (Model.ListOfNoti[i].Dotyczy == Models.NotificationType.UpdatedStatus)
+                            {
+                                <td data-label="Dotyczy" style="font-weight:700">
+                                    <span style="font-size:0.9em">@Model.ListOfNoti[i].Dotyczy</span>
+                                    <div class="xxc">
+
+                                        @if (@Model.ListOfNoti[i].NowyStatus == Models.StandbyStatus.Niedostepny)
+                                        {
+                                            <div style="background-color: #414e5c; color:#fff; padding: 0 0.4em 0.1em 0.4em; border-radius: 7px; width: fit-content">
+                                                @Model.ListOfNoti[i].NowyStatus 
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div style="background-color: #414e5c; color:#fff;padding: 0 0.4em 0.1em 0.4em; border-radius: 7px ">
+                                                @Model.ListOfNoti[i].NowyStatus 
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                            }
+                            else
+                            {
+                                <td data-label="Dotyczy" style="font-weight:700">
+                                    @Model.ListOfNoti[i].Dotyczy
+                                </td>
+                            }
+
+
+                            <td data-label="Akcja">
+                                <form method="post" class="displaySpinner">
+                                    <div style="" class="tableButtonCellContainerInline">
+                                        @{
+                                            if (@Model.ListOfNoti[i].Dotyczy == Models.NotificationType.AwaitingApproval)
+                                            {
+                                                <div class="tableButtonCell">
+                                                    <input id="" type="submit" class="btn  btn-outline-secondary tableButtonApprove" asp-page-handler="Approve"
+                                                          title="Zatwierdź" asp-route-selectedMemberId="@Model.ListOfNoti[i].UzytkownikId" value="" />
+                                                </div>
+
+                                                <div class="tableButtonCell">
+                                                    <a id="" class="btn btn-outline-secondary tableButtonDel"
+                                                       title="Usuń" asp-route-selectedMemberId="@Model.ListOfNoti[i].UzytkownikId"
+                                                       asp-page="/Members/EditMember"> </a>
+                                                </div>
+                                            }
+
+                                            else if (@Model.ListOfNoti[i].Dotyczy == Models.NotificationType.UpdatedStatus)
+                                            {
+                                                <div class="tableButtonCell">
+                                                    <input id="" type="submit" class="btn  btn-outline-secondary tableButtonDel" asp-page-handler="RemoveNewUserStatus"
+                                                           title="Usuń" asp-route-NotiId="@Model.ListOfNoti[i].NowyStatusId" value="" />
+                                                </div>
+                                            }
+                                            else if (@Model.ListOfNoti[i].Dotyczy == Models.NotificationType.OverdueUserDeadline
+                                            ||@Model.ListOfNoti[i].Dotyczy == Models.NotificationType.FewDaysLeftUserDeadline)
+                                            {
+                                            <div class="tableButtonCell">
+                                                <a id="" class="btn btn-outline-secondary tableButtonUpdate" 
+                                                   title="Aktualizuj" asp-page="/Members/EditMember"
+                                                   asp-route-selectedMemberId="@Model.ListOfNoti[i].UzytkownikId"> </a>
+                                            </div>
+                                            }
+                                            else if (@Model.ListOfNoti[i].Dotyczy == Models.NotificationType.OverdueEquipmentDeadline
+                                                ||@Model.ListOfNoti[i].Dotyczy == Models.NotificationType.FewDaysLeftEquipmentDeadline)
+                                            {
+                                            <div class="tableButtonCell">
+                                                <a id="" class="btn btn-outline-secondary tableButtonUpdate"
+                                                   title="Aktualizuj" asp-page="/Equipment/EditEquipment" 
+                                                   asp-route-selectedEquipmentId="@Model.ListOfNoti[i].UzytkownikId"> </a>
+                                            </div>
+                                            }
+                                        }
+                                    </div>
+                                </form>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                }
+            }
+
+        </table>
+
+
+
+
+    </div>
+</body>

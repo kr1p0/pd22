@@ -1,0 +1,225 @@
+﻿@page
+@model PracaDyplomowa.Pages.Competition.EditCompetitionModel
+@{
+}
+<!-- For Ajax-->
+@Html.AntiForgeryToken()
+
+
+@using PracaDyplomowa.Models
+
+@{
+    string CompetitionDate = "";
+    try
+    {
+        CompetitionDate = Convert.ToDateTime(@Model.CompetitionObj.Data).ToString("yyyy-MM-dd");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Error converting toDateTime @EditCompetitionModel" + ex.Message);
+    }
+
+}
+
+<body onload="onloadEditCompetition()">
+
+    <input type="hidden" asp-for="selectedCompetitionId" id="selectedCompetitionIdForEdit" />
+
+    <ul class="nav nav-tabs mainNavTabs ">
+        <li class="nav-item ">
+            <a class="nav-link navItemMembers " id=""
+               asp-route-selectedCompetitionId="@Model.CompetitionObj.Id"
+               asp-page="/Competition/ViewCompetition">Podgląd</a>
+        </li>
+        <li class="nav-item ">
+            <a class="nav-link navItemMembers active" id=""
+               asp-route-selectedCompetitionId="@Model.CompetitionObj.Id"
+               asp-page="/Competition/EditCompetition">Edytuj</a>
+        </li>
+        <li class=" " style="margin-left: auto; margin-right: 0; ">
+            @if (User.IsInRole(Models.User.UserType.Standard))
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Restricted/RestrictedMain">
+                    Wróć
+                </a>
+            }
+            else
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Competition/CompetitionOverview">
+                    Wróć
+                </a>
+            }
+        </li>
+    </ul>
+
+
+    <div class="innerContainer2">
+
+        <form method="post" id="editCompetitionForm" class="displaySpinner">
+            <div id="competitionEditWindow" class="m-3">
+                <div class="form-row justify-content-center " style="margin-top: 25px; margin-bottom:20px; width:100%">
+
+                    <div class="row formPanelContainer justify-content-center">
+
+                        <!--FIRST COLUMN-->
+                        <div class="fitstFrom2Column">
+                            <div class="fitstFrom2ColumnBtns">
+                                <div style="padding:3%">
+                                    <img class="" style="width: 100%;"
+                                         src="~/img/white/stopwatch-fill.svg">
+                                </div>
+
+                                <div class="input-group justify-content-center mt-1">
+                                    <input type="submit" class="btn btn-light btn-sm m-1" value="Zapisz" />
+
+                                    <a class="btn btn-light btn-sm  m-1 " asp-route-CompetitionId=@Model.CompetitionObj.Id
+                                       asp-page-handler="DeleteCompetition" asp-page="" onclick="waitSpinner()">
+                                        &nbsp;Usuń&nbsp;
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                            <!--SECOND COLUMN-->
+                            <div class="secondFrom2Column">
+
+                                <!--ALTERNATIVE 4 FIRST COLUMN-->
+                                <div class="alternativeElement">
+                                    <input type="submit" class="btn btn-light btn-sm mr-2" value="Zapisz" />
+
+                                    <a class="btn btn-light btn-sm  m-1 " asp-route-CompetitionId=@Model.CompetitionObj.Id
+                                       asp-page-handler="DeleteCompetition" asp-page="" onclick="waitSpinner()">
+                                        &nbsp;Usuń&nbsp;
+                                    </a>
+                                </div>
+                                <!--ALTERNATIVE-->
+
+                                <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                    <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Kategoria</label>
+                                    <input type="text" class="form-control customFormInputv2 inputInline" id="EdytujZawodyKategoria"
+                                           value=@Model.CompetitionObj.Kategoria required>
+                                </div>
+
+
+                                <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                    <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Szczebel</label>
+                                    <input type="text" class="form-control customFormInputv2 inputInline" id="EdytujZawodySzczebel"
+                                           value=@Model.CompetitionObj.Szczebel required>
+                                </div>
+
+
+                                <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                    <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Miejsce</label>
+                                    <input type="number" class="form-control customFormInputv2 inputInline" id="EdytujZawodyMiejsce"
+                                           value=@Model.CompetitionObj.ZajeteMiejsce required>
+                                </div>
+
+                                <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                    <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Uczestników</label>
+                                    <input type="text" class="form-control customFormInputv2 inputInline" id="EdytujZawodyIloscUczestnikow"
+                                           value=@Model.CompetitionObj.IloscUczestnikow readonly>
+                                </div>
+
+                                <div class="form-group  mb-4  form-inline " style="margin-top:-12px">
+                                    <label for="DodajAkcjeDataZakonczenia" class="mb-1 labelInline">Data</label>
+                                    <input type="date" class="form-control customFormInputv2 inputInline" id="EdytujZawodyData"
+                                           value=@CompetitionDate required>
+
+                                </div>
+
+                             
+
+                              <label for="addActionUserTable" class="mb-1 mt-3" style="font-weight: 600; font-size:1.1em;cursor:pointer" 
+                                data-toggle="collapse" data-target="#editCompetitionUserTableContainer" aria-expanded="false" aria-controls="editCompetitionUserTableContainer">
+                                ⌄ Uczestnicy </label>
+
+                                <div class=" collapse show" id="editCompetitionUserTableContainer"  style=" width: 100%;">
+                                 @if(Model.ListOfUsers.Count == 0)
+                                    {
+                                        <p style="text-align:center;font-size:1.2em;color:#999">BRAK  </p>
+                                    }
+                                    <table class="tableDefaultSm" id="editCompetitionUserTable">
+                                        <thead></thead>
+                                        @{
+                                            for (int i = 0; i < Model.ListOfUsers.Count; i++)
+                                            {
+                                                if (@Model.ListOfUsers[i].Zatwierdzony == "n")
+                                                {
+                                                    continue;
+                                                }
+                                                var conditionClass = Model.ListOfParticipantsId.Contains(Model.ListOfUsers[i].UzytkownikId) 
+                                                ? "selectedTableSmRow" : "";
+                                              
+                                                <tbody>
+                                                    <tr class="@conditionClass" style=" cursor: pointer;" 
+                                                        onclick="editMemberCompetitionTableOnClick(this)">
+
+
+                                                        @if (Model.ListOfParticipantsId.Contains(Model.ListOfUsers[i].UzytkownikId))
+                                                        {
+                                                            <td  data-label="" style="width:0">
+                                                                <input type="checkbox" class="ActionCheckBox" style="display:none" checked onclick="return false;" />
+                                                            </td>
+                                                            <td style="display:none">
+                                                                <input type="hidden" value="@Model.ListOfUsers[i].UzytkownikId" readonly />
+                                                            </td>
+
+                                                            <td style="display:none">
+                                                                <input type="hidden" value="@Model.ListOfUsers[i].Jednostka_id" readonly />
+                                                            </td>
+
+                                                            <td>
+                                                                <div style="display:grid">
+                                                                    <div>
+                                                                        @CustomStr.Adjust(Model.ListOfUsers[i].Imie)
+                                                                        @CustomStr.Adjust(Model.ListOfUsers[i].Nazwisko)
+                                                                    </div>
+                                                                    @{
+                                                                        int index = Model.ListOfCompetitionParticipants.
+                                                                            FindIndex(r => r.UczestnikId.Equals(Model.ListOfUsers[i].UzytkownikId));
+                                                                    }
+                                                                    <input class="form-control form-control-sm mt-2 competitionRoleInput" placeholder="Rola"
+                                                                           style="border: 0; border-radius:6px; text-align: center; margin-right:0.5em" 
+                                                                           value="@Model.ListOfCompetitionParticipants[@index].Rola" />
+                                                                </div>
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="mr-2" data-label="Dodaj" style="width:0">
+                                                                <input type="checkbox" style="display:none" class="ActionCheckBox" onclick="return false;" />
+                                                            </td>
+                                                            <td style="display:none">
+                                                                <input type="hidden" value="@Model.ListOfUsers[i].UzytkownikId" readonly />
+                                                            </td>
+
+                                                            <td style="display:none">
+                                                                <input type="hidden" value="@Model.ListOfUsers[i].Jednostka_id" readonly />
+                                                            </td>
+
+                                                            <td>
+                                                                <div style="display:grid">
+                                                                    <div>
+                                                                        @CustomStr.Adjust(Model.ListOfUsers[i].Imie)
+                                                                        @CustomStr.Adjust(Model.ListOfUsers[i].Nazwisko)
+                                                                    </div>
+
+                                                                    <input class="form-control form-control-sm mt-2 competitionRoleInput" placeholder="Rola"
+                                                                           style="display: none; border: 0; text-align: center; margin-right:0.6em" />
+                                                                </div>
+                                                            </td>
+                                                        }
+                                                    </tr>
+                                                </tbody>
+                                            }
+                                        }
+                                    </table>
+                                 
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>

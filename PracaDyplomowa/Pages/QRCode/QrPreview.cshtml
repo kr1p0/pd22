@@ -1,0 +1,47 @@
+﻿@page
+@model PracaDyplomowa.Pages.QRCode.QrPreviewModel
+@{
+}
+
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+<script>
+
+    function onloadQrPreview() {
+        document.getElementById("generatedGrcodeTrueSize").innerHTML = "";
+
+        var itemLocation = location.toString()
+        itemLocation = itemLocation.substring(0, itemLocation.indexOf('QRCode'));
+        itemLocation += "Equipment/ViewEquipment?selectedEquipmentId=" + sessionStorage.getItem("equipmentId");
+
+
+        new QRCode(document.getElementById("generatedGrcodeTrueSize"), {
+            text: itemLocation,
+            width: sessionStorage.getItem("qrWidthValue"),
+            height: sessionStorage.getItem("qrHightValue"),
+            colorDark: "#000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        window.print();
+    }
+   
+
+    
+    window.onafterprint = function () {
+      
+    }
+    window.addEventListener('afterprint', (event) => {
+        sessionStorage.clear();
+        window.close();
+    });
+  
+</script>
+
+<body onload="onloadQrPreview()">
+
+    <div style="margin-top:5px" id="generatedGrcodeTrueSize"></div>
+
+</body>
+

@@ -1,0 +1,278 @@
+﻿@page
+@model PracaDyplomowa.Pages.Members.ViewMemberModel
+@{
+}
+
+<!--for js communication-->
+<input class="backendALert" type="hidden" runat="server" value="@Model.passAlert">
+
+<input type="hidden" asp-for="UserInfo.UzytkownikId" />
+
+<ul class="nav nav-tabs mainNavTabs ">
+    <li class="nav-item ">
+        <a class="nav-link navItemMembers active" id="mamberViewTab"
+           asp-route-selectedMemberId="@Model.UserInfo.UzytkownikId"
+           asp-page="/Members/ViewMember">Podgląd</a>
+    </li>
+    <li class="nav-item ">
+        <a class="nav-link navItemMembers" id=""
+           asp-route-selectedMemberId="@Model.UserInfo.UzytkownikId"
+           asp-page="/Members/EditMember">Edytuj</a>
+    </li>
+    <li class="nav-item ">
+        <a class="nav-link navItemMembers" id=""
+           asp-route-selectedMemberId="@Model.UserInfo.UzytkownikId"
+           asp-page="/Members/EditPassword">Zmień hasło</a>
+    </li>
+    <li class=" " style="margin-left: auto; margin-right: 0; ">
+        @if (User.IsInRole(Models.User.UserType.Standard))
+        {
+            <a class="nav-link goBackNavBarBtn" asp-page="/Restricted/RestrictedMain">
+                Wróć
+            </a>
+        }
+        else
+        {
+            <a class="nav-link goBackNavBarBtn" asp-page="/Members/MembersOverview">
+                Wróć
+            </a>
+        }
+    </li>
+</ul>
+
+<div class="innerContainer2">
+
+
+
+    <div id="memberViewWindow" class="m-3">
+        <div class="row justify-content-center " style="margin-top: 25px; margin-bottom:20px; width:100%">
+
+            <div class="row formPanelContainer justify-content-center">
+
+                <!--FIRST COLUMN-->
+                <div class="fitstFrom2Column">
+                    <div id="">
+                        <a href="~/uploads/img/avatar/@Model.UserInfo.ImgNazwa" target="_blank">
+                            <img style="width: 100%; border-radius:6px" src="~/uploads/img/avatar/@Model.UserInfo.ImgNazwa"
+                                 onerror="this.src='/img/gray/person-fill.svg'">
+                        </a>
+                    </div>
+                </div>
+
+                <!--SECOND COLUMN-->
+                <div class="secondFrom2Column">
+
+                    <div class="form-group mb-0 form-inline" style="margin-top:-12px">
+                        <label for="userDataImie" class="mb-1 labelInline">Imię</label>
+                        <input type="text" class="inputInline form-control customFormInputReadOnly " id="userDataImie"
+                               asp-for="UserInfo.Imie" readonly>
+                    </div>
+
+
+                    <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                        <label for="userDataNazwisko" class="mb-1 labelInline">Nazwisko</label>
+                        <input type="text" class="form-control customFormInputReadOnly inputInline" id="userDataNazwisko"
+                               asp-for="UserInfo.Nazwisko" readonly>
+                    </div>
+
+                    <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                        <label for="userDataFunkcja" class="mb-1 labelInline">Funkcja</label>
+                        <input type="text" class="form-control customFormInputReadOnly inputInline" id="userDataFunkcja"
+                               asp-for="UserInfo.Funkcja" readonly>
+                    </div>
+
+                    <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                        <label for="userDataDataWstapi" class="mb-1 labelInline">Data wstąpienia</label>
+                        <input type="date" class="form-control customFormInputReadOnly inputInline" id="userDataDataWstapi"
+                               asp-for="UserInfo.DataWstapienia" readonly>
+                    </div>
+
+                    <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                        <label for="userDataEmail" class="mb-1 labelInline">E-mail</label>
+                        <input type="email" class="form-control customFormInputReadOnly inputInline" id="userDataEmail"
+                               asp-for="UserInfo.Email" readonly>
+                    </div>
+
+
+                    <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                        <label for="userDataAdres" class="mb-1 labelInline">Adres</label>
+                        <input type="text" class="form-control customFormInputReadOnly inputInline" id="userDataAdres"
+                               asp-for="UserInfo.Ulica" readonly>
+                    </div>
+
+
+                    <div class="form-group mb-0  form-inline" style="margin-top:-12px">
+                        <label for="userDataMiejscowosc" class="mb-1 labelInline">Miejscowość</label>
+                        <input type="text" class="form-control customFormInputReadOnly inputInline" id="userDataMiejscowosc"
+                               asp-for="UserInfo.Miejscowosc" readonly>
+                    </div>
+
+                    <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                        <label for="userDataKodPocztowy" class="mb-1 labelInline">Kod pocztowy</label>
+                        <input type="text" class="form-control customFormInputReadOnly inputInline" id="userDataKodPocztowy"
+                               asp-for="UserInfo.KodPocztowy" readonly>
+                    </div>
+
+                    <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                        <label for="userDataTelefon" class="mb-1 labelInline">Telefon</label>
+                        <input type="tel" class="form-control customFormInputReadOnly inputInline" id="userDataTelefon"
+                               asp-for="UserInfo.Telefon" readonly>
+                    </div>
+
+                    <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                        <label for="userDataStatus" class="mb-1 labelInline">Status</label>
+                        <input type="text" class="form-control customFormInputReadOnly inputInline" id="userDataStatus"
+                               asp-for="UserInfo.Status" readonly>
+                    </div>
+
+                    <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                        <label for="userDataIloscAkcji" class="mb-1 labelInline">W akcjach</label>
+                        <input type="text" class="form-control customFormInputReadOnly inputInline" id="userDataCzasPracy"
+                               asp-for="UserInfo.IloscAkcji" readonly>
+                    </div>
+
+                    <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                        <label for="userDataCzasPracy" class="mb-1 labelInline">Czas pracy</label>
+                        <input type="text" class="form-control customFormInputReadOnly inputInline" id="userDataCzasPracy"
+                               asp-for="UserInfo.CzasPracy" readonly>
+                    </div>
+
+                    <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                        <label for="userDataWaznoscBadan" class="mb-1 labelInline">Ważność badań</label>
+                        <input type="date" class="form-control customFormInputReadOnly inputInline" id="userDataWaznoscBadan"
+                               asp-for="UserInfo.WaznoscBadan" readonly>
+                    </div>
+
+                    <div class="form-group  mb-1  form-inline " style="margin-top:-12px">
+                        <label for="userTypeV" class="mb-1 labelInline">Uprawnienia</label>
+                        <input type="text" class="form-control customFormInputReadOnly inputInline" id="userTypeV"
+                               asp-for="UserInfo.TypKonta" readonly>
+                    </div>
+
+                    <hr />
+
+                    <div class="form-group form-inline justify-content-center">
+                        <label for="addActionUserTable" class="mb-1 mt-3" style="font-weight: 600; font-size:1.1em;cursor:pointer"
+                               data-toggle="collapse" data-target="#viewMemberActionTableContainer" aria-expanded="false" aria-controls="viewMemberActionTableContainer">
+                            ⌄ Udział w akcjach
+                        </label>
+
+                        <div class="  collapse" id="viewMemberActionTableContainer" style=" width: 100%;">
+                             @if(Model.ListOfActions.Count == 0)
+                                {
+                                    <p style="text-align:center;font-size:1.2em;color:#999">BRAK  </p>
+                                }
+                        <table class="tableDefaultSm  " id="viewMemberActionTable">
+                            <thead></thead>
+                            @{
+                                for (int i = 0; i < Model.ListOfActions.Count; i++)
+                                {
+                                    <tbody>
+                                        <tr class="" style=" cursor: pointer">
+                                            <td data-label="">
+                                                @Models.CustomStr.Adjust(Model.ListOfActions[i].TypZdarzenia,25)
+                                                <br />
+                                                @(Model.ListOfActions[i].CzasZdarzenia+" - "+ Model.ListOfActions[i].CzasZakonczenia)
+
+                                                <input type="hidden" value="@Model.ListOfActions[i].Id" readonly />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                }
+                            }
+                        </table>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group form-inline justify-content-center">
+                        <label for="addActionUserTable" class="mb-1 mt-3" style="font-weight: 600; font-size:1.1em;cursor:pointer"
+                               data-toggle="collapse" data-target="#viewMemberEquipmentTableContainer" aria-expanded="false" aria-controls="viewMemberEquipmentTableContainer">
+                            ⌄ Przypisany sprzęt
+                        </label>
+
+                          <div class="  collapse" id="viewMemberEquipmentTableContainer"  style=" width: 100%;">
+                             @if(Model.ListOfEquipmentAssignedToMember.Count == 0)
+                                {
+                                    <p style="text-align:center;font-size:1.2em;color:#999">BRAK  </p>
+                                }
+
+                            <table class="tableDefaultSm " id="viewMemberEquipmentTable">
+                                <thead></thead>
+                                @{
+                                    for (int i = 0; i < Model.ListOfEquipmentAssignedToMember.Count; i++)
+                                    {
+                                        <tbody>
+                                            <tr class="" style=" cursor: pointer">
+
+                                                <td data-label="" class="mr-2">
+                                                    @(Models.CustomStr.Adjust(Model.ListOfEquipmentAssignedToMember[i].Producent)
+                                                    +" - "+ @Models.CustomStr.Adjust(Model.ListOfEquipmentAssignedToMember[i].Model))
+                                                    <br />
+                                                    @("SN: "+ Models.CustomStr.Adjust(Model.ListOfEquipmentAssignedToMember[i].Sn)+" 　")
+                                                    @("Ilosc: " + @Models.CustomStr.Adjust(Model.ListOfEquipmentAssignedToMember[i].Ilosc))
+
+                                                    <input type="hidden" value="@Model.ListOfEquipmentAssignedToMember[i].Id" readonly />
+
+                                                </td>
+
+                                            </tr>
+                                        </tbody>
+                                    }
+                                }
+                            </table>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group form-inline justify-content-center">
+                        <label for="addActionUserTable" class="mb-1 mt-3" style="font-weight: 600; font-size:1.1em;cursor:pointer"
+                               data-toggle="collapse" data-target="#viewMemberCoursesTableContainer" aria-expanded="false" aria-controls="viewMemberCoursesTableContainer">
+                            ⌄ Ukończone kursy
+                        </label>
+                          <div class="  collapse" id="viewMemberCoursesTableContainer"  style=" width: 100%;">
+                             @if(Model.ListOfCourses.Count == 0)
+                                {
+                                    <p style="text-align:center;font-size:1.2em;color:#999">BRAK  </p>
+                                }
+
+                        <table class="tableDefaultSm" id="viewMemberCoursesTable">
+                            <thead></thead>
+                            @{
+                                for (int i = 0; i < Model.ListOfCourses.Count; i++)
+                                {
+                                    var KursDataWaznosci = string.IsNullOrEmpty(@Model.ListOfCourses[i].KursDataWaznosci) ? "∞" : @Model.ListOfCourses[i].KursDataWaznosci;
+                                    <tbody>
+                                        <tr class="" style=" cursor: pointer">
+                                            <td data-label="Data" class="mr-2">
+                                                @Model.ListOfCourses[i].Kurs
+                                                <br />
+                                                @(Model.ListOfCourses[i].KursDataUkonczenia+" - "+ @KursDataWaznosci)
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                }
+                            }
+                        </table>
+                        </div>
+                    </div>
+
+
+
+
+                    @if (!string.IsNullOrEmpty(Model.UserInfo.ImgNazwa))
+                    {
+                        <hr />
+                        <div id="memberViewImgContainer">
+                            <a href="~/uploads/img/avatar/@Model.UserInfo.ImgNazwa" target="_blank">
+                                <img id="memberViewImg" src="~/uploads/img/avatar/@Model.UserInfo.ImgNazwa" />
+                            </a>
+                        </div>
+                    }
+                </div>
+        </div>
+    </div>
+</div>
+</div>

@@ -1,0 +1,21 @@
+11
+
+Follow this steps:
+
+$ heroku login
+Create a new Git repository
+Initialize a git repository in a new or existing directory
+
+$ cd C:\Users\kr1p0\Desktop\PracaDyplomowaM\PracaDyplomowa
+$ git init
+$ heroku git:remote -a appname
+Deploy your application
+Commit your code to the repository and deploy it to Heroku using Git.
+
+$ git add . 
+$ git commit -am "make it better"
+$ git push heroku master
+Existing Git repository
+For existing repositories, simply add the heroku remote
+
+$ heroku git:remote -a appname

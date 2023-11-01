@@ -1,0 +1,1 @@
+heroku config:add LANG=en_US.UTF-8

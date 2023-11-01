@@ -1,0 +1,86 @@
+﻿@page
+@model PracaDyplomowa.Pages.Members.CoursesModel
+@{
+}
+
+
+
+@Html.AntiForgeryToken()
+
+<input type="hidden" value="@Model.selectedUserId" id="coursesSelectedUserId" />
+
+<body onload="onloadCourses()">
+    
+    <form id="coursesTableForm" class="displaySpinner">
+        <div class="upperMenuBar">
+
+            <input type="submit" class="btn btn-secondary btn-sm ml-3" style="color:white" title="Zapisz" value="Zapisz"/>
+
+            <a class="btn btn-secondary btn-sm ml-3" style="color:white" title="Dodaj" href="javascript:addMemeberCoursRow()">
+                Dodaj
+            </a>
+    
+        </div>
+
+
+        <div class="innerContainerMembers" style=" overflow-x: auto;" id="coursesCointainer">
+
+            @{
+                if (Model.ListOfCourses.Count == 0)
+                {
+
+                    <table id="coursesTable" class="tableDefault">
+                        <thead>
+                            <tr style="position: sticky; top: 0;">
+                                <th scope="col"></th>
+                                <th scope="col">Kurs</th>
+                                <th scope="col">Data ukończenia</th>
+                                <th scope="col">Data ważności</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <div class="row  justify-content-center mt-4" id="noContentCourses" style="width:100%">
+                        <h3> BRAK POZYCJI DO WYŚWIETLENIA </h3>
+                    </div>
+                    return;
+                }
+            }
+            <!--  <div class="upperBar"></div> -->
+
+            <table id="coursesTable" class="tableDefault">
+                <thead>
+                    <p style="text-align:center; font-size:1.2em;font-weight:700; background-color:#585e73;color:white; font-family: monospace">EDYTUJ UKOŃCZONE KURSY UŻYTKOWNIKA</p>
+                    <tr style="position: sticky; top: 0;">
+                        <th scope="col">Usuń</th>
+                        <th scope="col">Kurs</th>
+                        <th scope="col">Data ukończenia</th>
+                        <th scope="col">Data ważności</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.ListOfCourses.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                <img src="~/img/gray/x-circle-fill.svg" alt="" onclick="removeCourse(@Model.ListOfCourses[i].KursId)">
+                            </td>
+                            <td>
+                                <textarea class="text-center" rows="1">@Model.ListOfCourses[i].Kurs</textarea>
+                            </td>
+                            <td>
+                                <input type="date" value="@Model.ListOfCourses[i].KursDataUkonczenia" />
+                            </td>
+                            <td>
+                                <input type="date" value="@Model.ListOfCourses[i].KursDataWaznosci" />
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+
+        </div>
+     </form>
+</body>

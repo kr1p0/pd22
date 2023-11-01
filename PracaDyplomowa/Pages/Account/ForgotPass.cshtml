@@ -1,0 +1,40 @@
+﻿@page
+@model PracaDyplomowa.Pages.Account.ForgotPassModel
+@{
+}
+
+
+
+@if (Model.Confirmed == true)
+{
+    <div class=" d-flex justify-content-center  " style="margin-top: 60px;">
+        <div class="container-fluid" style="width:35%">
+            <div>
+                <h2 class="formTitle">Wprowadź nowe haslo</h2>
+            </div>
+            <div>
+                <form method="post" class="form-group">
+                    <input type="hidden" asp-for="hashStr.UzytkownikId" />
+                    <div>
+                        <input type="password" id="registerPass" class="customFormInput "
+                               placeholder="Haslo" oninput="checkIfPasswordIsEqual('displayPassError')"
+                               asp-for="newPasswordInput" required>
+                        <div id="displayPassError"> </div>
+                    </div>
+                    <div>
+                        <input type="password" id="registerConfirmPass" class="customFormInput "
+                               placeholder="Potwierdź haslo" oninput="checkIfPasswordIsEqual('displayconfirmPassError')"
+                               required>
+                        <div id="displayconfirmPassError"> </div>
+                    </div>
+
+                    <div>
+                        <input type="submit" value="Zapisz" id="registerFormSubmit" class="customSubmitBtn"
+                               asp-page-handler="NewPass">
+                    </div>
+                </form>
+            </div>
+            <br>
+        </div>
+    </div>
+}

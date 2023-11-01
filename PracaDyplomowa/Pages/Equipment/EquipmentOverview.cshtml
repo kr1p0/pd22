@@ -1,0 +1,291 @@
+﻿@page
+@model PracaDyplomowa.Pages.Equipment.EquipmentOverviewModel
+@{
+}
+
+@using PracaDyplomowa.Models
+
+<!--for js communication-->
+<input class="backendALert" type="hidden" runat="server" value="@Model.passAlert">
+<input type="hidden" value="@Model.selectedUserId" id="equipmentOverviewSelectedUserId" />
+<!-- For Ajax-->
+@Html.AntiForgeryToken()
+
+<body onload="onloadEquipment()">
+    <div class="upperMenuBar">
+        <div class="dropdown">
+            <button class="btn btn-light btn-sm dropdown-toggle dropdownMenuMenuBar" type="button"
+                    data-toggle="dropdown" aria-expanded="false">
+            </button>
+            <div class="dropdown-menu shadow p-3" aria-labelledby="dropdownMenuButton"
+                 style="background-color: #f0f2f5; border: solid thin #d0d2d5 ">
+                <form method="post">
+                    <p class=" bg-dark text-white p-1" style="border-radius:4px">Filtruj:</p>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="EquipmentCustomRadioFilter1" name="EquipmentCustomRadioFilter"
+                               class="custom-control-input" value="cars">
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="EquipmentCustomRadioFilter1">Samochody</label>
+                    </div>
+
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="EquipmentCustomRadioFilter2" name="EquipmentCustomRadioFilter"
+                               class="custom-control-input" value="tools">
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="EquipmentCustomRadioFilter2">Sprzet</label>
+                    </div>
+
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="EquipmentCustomRadioFilter3" name="EquipmentCustomRadioFilter"
+                               class="custom-control-input" value="uniforms">
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="EquipmentCustomRadioFilter3">Umundurowanie</label>
+                    </div>
+
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="EquipmentCustomRadioFilter4" name="EquipmentCustomRadioFilter"
+                               class="custom-control-input" value="inspection" >
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="EquipmentCustomRadioFilter4">Wymagające przeglądu</label>
+                    </div>
+
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="EquipmentCustomRadioFilter5" name="EquipmentCustomRadioFilter"
+                               class="custom-control-input" value="all" checked>
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="EquipmentCustomRadioFilter5">Wszystko</label>
+                    </div>
+
+
+                    <p class="bg-dark text-white p-1 " style="border-radius:4px">Sortuj:</p>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="EquipmentCustomRadioSort1" name="EquipmentCustomRadioSort" value="manufacturer"
+                               class="custom-control-input">
+                        <label class="custom-control-label" for="EquipmentCustomRadioSort1">Producent</label>
+                    </div>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="EquipmentCustomRadioSort2" name="EquipmentCustomRadioSort" value="model"
+                               class="custom-control-input" checked>
+                        <label class="custom-control-label" for="EquipmentCustomRadioSort2">Model</label>
+                    </div>
+
+                    <div class="custom-control custom-radio mb-3">
+                        <input type="radio" id="EquipmentCustomRadioSort3" name="EquipmentCustomRadioSort" value="date"
+                               class="custom-control-input">
+                        <label class="custom-control-label" for="EquipmentCustomRadioSort3">Data przeglądu</label>
+                    </div>
+
+                    <input type="submit" style="width:100%" class="btn btn-dark" value="Zapisz"
+                           asp-page-handler="SaveDisplayOptions" asp-route-selectedUserId="@Model.selectedUserId" />
+                </form>
+            </div>
+        </div>
+
+        @if (string.IsNullOrEmpty(Model.selectedUserId))
+        {
+
+            <a class="btn btn-secondary btn-sm ml-3" style="color:white" title="Dodaj" asp-page="/Equipment/AddEquipment">
+                Dodaj
+            </a>
+        }
+        else
+        {
+              <a class="btn btn-secondary btn-sm ml-3" style="color:white" title="Dodaj" 
+                 onclick="assignEquipmentToMemberTableSave()" href="javascript:void('')">
+                Zapisz
+            </a>
+        }
+
+        <div style="width:100%">
+            <input type="search" id="searchEquipmentOverviewInput" placeholder="Szukaj"
+                   style="float: right; width: 40%; min-width: 58px;"
+                   class="btn btn-sm btn-light" oninput="searchEquipmentOverview()" />
+        </div>
+    </div>
+
+    <div class="innerContainer" style=" overflow-x: auto;">
+
+        <!--  <div class="upperBar"></div> -->
+        
+
+        @if(string.IsNullOrEmpty(Model.selectedUserId))
+        {
+
+        <table id="equipmentTable" class="tableDefault"  style=" overflow-x: auto;">
+            <thead>
+                <tr style="position: sticky; top: 0;">
+                    <th scope="col">Lp.</th>
+                    <th scope="col">Producent</th>
+                    <th scope="col">Model</th>
+                    <th scope="col">Kolejne badania</th>
+                    <th scope="col">Typ</th>
+                    <th scope="col">Akcja</th>
+                </tr>
+            </thead>
+
+
+           
+                
+            @{
+                var count = 0;
+                for (int i = 0; i < Model.ListOfEquipment.Count; i++)
+                {
+                    count++;
+                    <tbody>
+                    <tr class="" style=" cursor: pointer">
+                        <td data-label="Lp.">
+                            @(count+".")
+                            <input type="hidden" value=@Model.ListOfEquipment[i].Id />
+                        </td>
+
+                        <td data-label="Producent">
+                            @CustomStr.Adjust(Model.ListOfEquipment[i].Producent)
+                        </td>
+
+                        <td data-label="Model">
+                            @CustomStr.Adjust(Model.ListOfEquipment[i].Model)
+                        </td>
+
+                        <td data-label="Kolejne badania">
+                            @CustomStr.Adjust(Model.ListOfEquipment[i].AktualnoscBadan, 20)
+                        </td>
+
+                        <td data-label="Typ">
+                            @{
+                                if (Model.ListOfEquipment[i].Typ == @Models.Equipment.EquipmentType.Samochod)
+                                {
+                                    <span>Pojazd</span>
+                                }
+                                else if (Model.ListOfEquipment[i].Typ == @Models.Equipment.EquipmentType.Sprzet)
+                                {
+                                    <span>Sprzet</span>
+                                }
+                                else if (Model.ListOfEquipment[i].Typ == @Models.Equipment.EquipmentType.Umundurowanie)
+                                {
+                                    <span>Umundurowanie</span>
+                                }
+                                else
+                                {
+                                    <span>Inne</span>
+                                }
+                            }
+
+                        </td>
+                                   
+                        <td data-label="Akcja">
+                            <div class="tableButtonCellContainerInline">
+                                <div class="tableButtonCell">
+                                    <a id="" class="btn  btn-outline-secondary tableButtonQr" asp-page="/QRCode/QRCodeGenerate"
+                                      title="Generuj kod Qr"  asp-route-selectedEquipmentId="@Model.ListOfEquipment[i].Id"> </a>
+                                </div>
+                                <!--
+                                    <div class="tableButtonCell">
+                                        <a id="" class="btn  btn-outline-secondary" asp-page="/Equipment/ViewEquipment"
+                                            asp-route-selectedEquipmentId="@Model.ListOfEquipment[i].Id">Podgląd </a>
+                                    </div>
+                                -->
+                                <div class="tableButtonCell">
+                                    <a id="" class="btn btn-outline-secondary tableButtonEdit"
+                                        title="Edycja" asp-route-selectedEquipmentId="@Model.ListOfEquipment[i].Id"
+                                        asp-page="/Equipment/EditEquipment"> </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                }
+            
+
+        }
+        </table>
+        }
+
+
+        @if (!string.IsNullOrEmpty(Model.selectedUserId))
+        {
+            <table id="assignEquipmentToMemberTable" class="tableDefault"  style=" overflow-x: auto;">
+                <thead>
+                <p style="text-align:center; font-size:1.2em;font-weight:700; background-color:#585e73;color:white; font-family: monospace">EDYTUJ SPRZĘT PRZYPISANY DO UŻYTKOWNIKA</p>
+                    <tr style="position: sticky; top: 0;">
+                        <th scope="col">Dodaj</th>
+                        <th scope="col">Producent</th>
+                        <th scope="col">Model</th>
+                        <th scope="col">Sn</th>
+                        <th scope="col">Ilosc</th>
+                        <th scope="col">Typ</th>
+                    </tr>
+                </thead>
+
+
+                @{
+
+                    for (int i = 0; i < Model.ListOfEquipment.Count; i++)
+                    {
+                        var assignedCount = "1"; 
+                        <tbody>
+                            <tr class="" style=" cursor: pointer">
+                                @if (Model.ListOfEquipmentIdAssignedToMember.Contains(Model.ListOfEquipment[i].Id))
+                                {
+                                    assignedCount = Model.ListOfEquipmentAssignedToMember.Find(x => x.Id == Model.ListOfEquipment[i].Id).Ilosc;
+                                    <td data-label="Dodaj">
+                                        <input type="checkbox" checked class="ActionCheckBox"
+                                        onclick="return false;" />
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td data-label="Dodaj">
+                                        <input type="checkbox" class="ActionCheckBox"
+                                        onclick="return false;" />
+                                    </td>
+                                }
+
+                                <td data-label="Producent">
+                                    @CustomStr.Adjust(Model.ListOfEquipment[i].Producent)
+                                    <input type="hidden" value="@Model.ListOfEquipment[i].Id" readonly />
+                                </td>
+
+                                <td data-label="Model">
+                                    @CustomStr.Adjust(Model.ListOfEquipment[i].Model)
+                                </td>
+
+                                <td data-label="Sn">
+                                    @CustomStr.Adjust(Model.ListOfEquipment[i].Sn, 20)
+                                </td>
+
+                                 <td data-label="Ilosc">
+                                    <input type="number" value="@assignedCount" id="equipmentAssignToMemberCountInp" 
+                                           min="1" max="@Model.ListOfEquipment[i].Ilosc" />
+                                </td>
+
+                                <td data-label="Typ">
+                                    @{
+                                        if (Model.ListOfEquipment[i].Typ == @Models.Equipment.EquipmentType.Samochod)
+                                        {
+                                            <span>Pojazd</span>
+                                        }
+                                        else if (Model.ListOfEquipment[i].Typ == @Models.Equipment.EquipmentType.Sprzet)
+                                        {
+                                            <span>Sprzet</span>
+                                        }
+                                        else if (Model.ListOfEquipment[i].Typ == @Models.Equipment.EquipmentType.Umundurowanie)
+                                        {
+                                            <span>Umundurowanie</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Inne</span>
+                                        }
+                                    }
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    }
+                }
+
+        </table>
+        }
+
+    </div>
+</body>

@@ -1,0 +1,33 @@
+﻿@page
+@model PracaDyplomowa.Pages.Chat.ChatViewModel
+@{
+}
+
+<!-- For Ajax-->
+@Html.AntiForgeryToken()
+
+
+
+<body onload="ChatOnload()">
+    <input id="chatCurrentLoggedName" type="hidden" asp-for="@Model.CurrentLoggedName" readonly />
+    <input id="chatCurrentLoggedLastName" type="hidden" asp-for="@Model.CurrentLoggedLastName" readonly />
+    <input id="chatCurrentLoggedUserId" type="hidden" asp-for="@Model.CurrentLoggedUserId" readonly />
+    <input id="chatCurrentLoggedUnit" type="hidden" asp-for="@Model.CurrentLoggedUnit" readonly />
+
+
+
+    <div class="innerContainer3" style="overflow-x:hidden; position:relative">
+
+        <div id="messagesDisplaYDiv" onscroll="chatOnScroll()">
+            <ul on id="messagesList"></ul>
+
+        </div>
+        <div class=" row justify-content-center sendChatButtonContainer ">
+            <input type="text" placeholder="Treść wiadomości" id="messageInput" onkeyup="sendChatMsgOnEnterDown()" />
+            <button type="button" id="sendChatButton" class="btn"> <img src="~/img/black/chat-dots.svg"> </button>
+        </div>
+
+    </div>
+
+
+</body>

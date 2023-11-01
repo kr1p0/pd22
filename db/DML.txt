@@ -1,0 +1,32 @@
+
+INSERT INTO OSP_JEDNOSTKA (nazwa_jednostki) VALUES ('ospDB');
+
+
+INSERT INTO osp_uzytkownik(jednostka_id, typ_konta, imie, nazwisko, email, haslo, sol, telefon, funkcja, data_wstapienia , zatwierdzony) 
+VALUES (1,'administrator','Kryspin','Kolodziej','wir-fred@tlen.pl','qwerty','asdadasdadadsdadasdasdas',453234765,'skarbnik',TO_DATE('24/12/2000', 'DD/MM/YYYY'),'n')
+
+
+INSERT INTO osp_uzytkownik(jednostka_id, typ_konta, imie, nazwisko, email, haslo, telefon, funkcja, data_wstapienia) 
+VALUES (1,'administrator','Kryspin','Kolodziej','wir-fred@tlen.pl','qwerty',453234765,'skarbnik',TO_DATE('24/12/2000', 'DD/MM/YYYY') )
+
+INSERT INTO osp_uzytkownik(jednostka_id, typ_konta, imie, nazwisko, email, haslo, telefon, funkcja, data_wstapienia) 
+VALUES (1,'standardowy','Rafal','Kaminski','phpxd2@gmail.com','qwerty',458765239,'',TO_DATE('13/4/2005', 'DD/MM/YYYY') )
+
+INSERT INTO OSP_TEMPHASH (uzytkownik_id, hash_string) VALUES(1 ,'hashxxx')
+SELECT *
+FROM OSP_tempHash 
+WHERE  data_utworzenia> sysdate -1/24
+
+
+
+
+
+
+INSERT INTO OSP_KALENDARZ (jednostka_id, tytul , tresc, data_rozpoczecia, powiadomienie_email, powiadomienie_telefon, tlo_kolor_hex, czcionka_kolor_hex)
+values (1, 'checkCalendar', 'checkTrescTrescTresc', TO_TIMESTAMP('2021-12-25 11:20:31', 'YYYY-MM-DD HH24:MI:SS'),  't' , 't' , '#76500a', '#2a1123')
+
+INSERT INTO OSP_KALENDARZ (jednostka_id, tytul , tresc, data_rozpoczecia, czas_rozpoczecia, powiadomienie_email, powiadomienie_telefon, tlo_kolor_hex, czcionka_kolor_hex)
+values (1, 'checkCalendar', 'checkTrescTrescTresc', TO_DATE('2021-12-18', 'YYYY-MM-DD'), TO_TIMESTAMP('2021-12-18 11:20:31', 'YYYY-MM-DD HH24:MI:SS'),  't' , 't' , '#482100', '#000')
+
+insert into osp_akcje (jednostka_id, typ_zdarzenia, data_zdarzenia, czas_zdarzenia, czas_zakonczenia, ilosc_uczestnikow)
+values(1, 'pozar2' , TO_DATE('28/12/2021', 'DD/MM/YYYY') ,TO_TIMESTAMP('2021-12-28 11:20:31', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2021-12-28 12:50:31', 'YYYY-MM-DD HH24:MI:SS'), 7 )

@@ -1,0 +1,403 @@
+﻿@page
+@model PracaDyplomowa.Pages.Account.LoginModel
+@{
+}
+<!--for js communication-->
+<input class="backendALert" type="hidden"   runat="server" value="@Model.passAlert">
+
+
+<div class="d-flex justify-content-center logRegForgetStyle ">
+
+    <div id="mainLoginWIndow" class="centerVerticalHorizontal">
+
+        <div id="internalFormWindow"></div>
+
+        <div id="outerFormWindow" class="panelTransitions">
+
+            <div id="doLoginInfo">
+                <div style="text-align: center;">
+                    <h4>Zarejestrowane</h4>
+                    <h4>konto?</h4>
+                    <br>
+                    <h4>
+                        <a href="javascript:void('')" class="moveLoginRegisterPanelL">Zaloguj</a>
+                    </h4>
+                </div>
+            </div>
+
+            <div id="doRegisterInfo">
+                <div style=" text-align: center;">
+                    <h4>Nie posiadasz</h4>
+                    <h4>konta?</h4>
+                    <br>
+                    <h4>
+                        <a href="javascript:void('')" class="moveLoginRegisterPanelR">Zarejestruj</a>
+                    </h4>
+                </div>
+
+            </div>
+
+            <div id="windowCover" class="panelTransitions">
+
+
+                <div class=" text-center panelTransitions" id="login-form">
+                    <div class="container-fluid">
+                        <div>
+                            <h2 class="formTitle">Login</h2>
+                      
+
+                        </div>
+                        <div>
+                            <form method="post" class="form-group">
+                                <div>
+                                    <input type="email" id="" class="customFormInput loginValCls" placeholder="E-mail"
+                                           asp-for="LoginInput" required>
+                                </div>
+                                <div>
+                                    <input type="password" id="" class="customFormInput passValCls" placeholder="Haslo"
+                                           asp-for="LoginPasswordInput" required>
+                                </div>
+
+                                <div>
+                                    <input type="submit" value="Zaloguj" class="customSubmitBtn" 
+                                           asp-route-returnurl="@Request.Query["ReturnUrl"]" asp-page-handler="Login">
+                                </div>
+                            </form>
+                        </div>
+                        <br>
+                        <div>
+                            <p>Zapomniałes hasła? <a href="javascript:void('');" class="forgotPassLoginPanel">Odzyskaj</a></p>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class=" text-center panelTransitions" id="register-form">
+                    <div class="container-fluid">
+                        <div>
+                            <h2 class="formTitle mt-2">Rejestracja</h2>
+                        </div>
+                        <div>
+                            <form method="post" class="form-group">
+                                <div>
+                                    <input type="text" id="" class="customFormInput "
+                                           placeholder="Imie" asp-for="NameInput" required>
+                                </div>
+                                <div>
+                                    <input type="text" id="" class="customFormInput "
+                                           placeholder="Nazwisko" asp-for="LastnameInput" required>
+                                </div>
+                                <div>
+                                    <input type="email" id="" class="customFormInput  "
+                                           placeholder="E-mail" asp-for="RegistrationEmailInput" required>
+                                </div>
+                                <div>
+                                    <input type="password" id="registerPass" class="customFormInput "
+                                           placeholder="Haslo" oninput="checkIfPasswordIsEqual('displayPassError')"
+                                           asp-for="RegistrationPasswordInput" required>
+                                    <div id="displayPassError"> </div>
+                                </div>
+                                <div>
+                                    <input type="password" id="registerConfirmPass" class="customFormInput "
+                                           placeholder="Potwierdź haslo" oninput="checkIfPasswordIsEqual('displayconfirmPassError')"
+                                           required>
+                                    <div id="displayconfirmPassError"> </div>
+                                </div>
+                                <div>
+                                    <input type="text" id="registerFireProtectionUnit" class="customFormInput  "
+                                           placeholder="Nazwa jednostki" asp-for="FireProtectionUnitInput" required>
+                                </div>
+
+                                <div>
+                                    <input type="submit" value="Rejestracja" id="registerFormSubmit" class="customSubmitBtn"
+                                           asp-page-handler="Registration">
+                                </div>
+                            </form>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+
+
+
+                <div class=" text-center panelTransitions" id="passRecovery-form">
+                    <div class="container-fluid">
+                        <div>
+                            <h2 class="formTitle">Odzyskaj hasło</h2>
+                           
+                            <br>
+                        </div>
+                        <div>
+                            <form method="post" class="form-group">
+                                <div>
+                                    <input type="email" id="" class="customFormInput "
+                                           placeholder="Email" asp-for="ForgotenPasswordEmail" required>
+                                </div>
+
+                                <div>
+                                    <input type="submit" value="Wyślij" class="customSubmitBtn"
+                                           asp-page-handler="ForgotPassword">
+                                </div>
+                            </form>
+                        </div>
+                        <br> <br><br>
+                        <div>
+                            <p>Wróć do panelu logowania. <a href="javascript:void('');" class="backFromRecoveryPanel">Zaloguj</a></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="mobileMainLoginWIndow" >
+
+        <div class=" text-center " id="MobileLoginForm">
+            <div class="container-fluid">
+                <div>
+                    <h2 class="formTitle">Login</h2>
+                 
+                </div>
+                <div>
+                    <form method="post" class="form-group displaySpinner">
+                        <div>
+                            <input type="email" id="" class="customFormInput loginValCls" placeholder="E-mail"
+                                   asp-for="LoginInput" required>
+                        </div>
+                        <div>
+                            <input type="password" id="" class="customFormInput passValCls" placeholder="Haslo"
+                                   asp-for="LoginPasswordInput" required>
+                        </div>
+
+                        <div>
+                            <input type="submit" asp-route-returnurl="@Request.Query["ReturnUrl"]" 
+                                   value="Zaloguj" class="customSubmitBtn" asp-page-handler="Login">
+                        </div>
+                    </form>
+                </div>
+                <br>
+                <div>
+                    <p>Nie posiadasz konta? <a href="javascript:void('');" id="goToMobileRegisterPanel">Zarejestruj</a></p>
+                </div>
+                <div>
+                    <p>Zapomniałes hasła? <a href="javascript:void('');" id="goToPassRecoverPanel">Odzyskaj</a></p>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class=" text-center" id="MobileRegisterForm">
+            <div class="container-fluid">
+                <div>
+                    <h2 class="formTitle mt-2">Rejestracja</h2>
+                </div>
+                <div>
+                    <form method="post" class="form-group displaySpinner">
+                        <div>
+                            <input type="text" id="" class="customFormInput "
+                                   placeholder="Imie" asp-for="NameInput" required>
+                        </div>
+                        <div>
+                            <input type="text" id="" class="customFormInput "
+                                   placeholder="Nazwisko" asp-for="LastnameInput" required>
+                        </div>
+                        <div>
+                            <input type="email" id="" class="customFormInput  "
+                                   placeholder="E-mail" asp-for="RegistrationEmailInput" required>
+                        </div>
+                        <div>
+                            <input type="password" id="registerPassSm" class="customFormInput "
+                                   placeholder="Haslo" oninput="checkIfPasswordIsEqualMobile('displayPassErrorSm')"
+                                   asp-for="RegistrationPasswordInput" required>
+                            <div id="displayPassErrorSm"> </div>
+                        </div>
+                        <div>
+                            <input type="password" id="registerConfirmPassSm" class="customFormInput "
+                                   placeholder="Potwierdź haslo" oninput="checkIfPasswordIsEqualMobile('displayconfirmPassErrorSm')"
+                                   required>
+                            <div id="displayconfirmPassErrorSm"> </div>
+                        </div>
+                        <div>
+                            <input type="text" id="" class="customFormInput  "
+                                   placeholder="Nazwa jednostki" asp-for="FireProtectionUnitInput" required>
+                        </div>
+
+                        <div>
+                            <input type="submit" value="Rejestracja" id="registerFormSubmitSm" class="customSubmitBtn"
+                                   asp-page-handler="Registration">
+                        </div>
+                    </form>
+                </div>
+                <br>
+                <div>
+                    <p>Posiadasz konto? <a href="javascript:void('');" id="goBackToLoginMobilePanel2">Zaloguj</a></p>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class=" text-center" id="MobilepassRecoveryForm">
+            <div class="container-fluid">
+                <div>
+                    <h2 class="formTitle mt-2">Odzyskaj hasło</h2>
+                    <br>
+                </div>
+                <div>
+                    <form method="post" class="form-group displaySpinner">
+                        <div>
+                            <input type="email" id="" class="customFormInput "
+                                   placeholder="Email" asp-for="ForgotenPasswordEmail" required>
+                        </div>
+
+                        <div>
+                            <input type="submit" value="Wyślij" class="customSubmitBtn"
+                                   asp-page-handler="ForgotPassword">
+                        </div>
+                    </form>
+                </div>
+                <br> <br><br>
+                <div>
+                    <p>Wróć do panelu logowania. <a href="javascript:void('');" id="goBackToLoginMobilePanel">Zaloguj</a></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<!--#################### DEMO ###################-->
+
+<style>
+#outerWindow{
+    position:absolute;
+    left:-600px;
+    top:65px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-family: Raleway;
+    text-align: center;
+    animation: wiggle 2s linear;
+    animation-delay:1.5s;
+    animation-iteration-count: 1;
+    transition: left 800ms ease-in-out;
+    background-color:#fff;
+    margin-left:30px;
+
+}
+
+#outerWindow p{
+   margin:13px 20px;
+}
+#closeElement{
+    position:absolute;
+    right:5px;
+    top:5px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+#topColor{
+    width: 100%;
+   padding: 10px 0;
+    background-color: #0d2951dd;
+    border-radius: 12px 12px 0 0 ;
+    text-align: center;
+}
+#topColor svg{
+    margin-top:8px;
+    opacity:0.3;
+}
+#demoDiv{
+    position: absolute;
+    left:-43px;
+    padding: 6px 6px 0 6px;
+    border-radius: 7px 7px  0 0;
+    transform: rotate(-90deg);
+    margin-top:100px;
+    background-color:#509f74;
+    color:white;
+    letter-spacing: 1.3px;
+    font-size: 14px;
+}
+
+
+</style>
+    <div id="outerWindow">
+        <div id="demoDiv">DEMO</div>
+        <div id="topColor">
+            <svg xmlns="http://www.w3.org/2000/svg"  height="70px" fill="#fff" class="bi bi-shield-check" viewBox="0 0 16 16" >
+                <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a.55.55 0 0 0 .101.025.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z"/>
+                <path d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+            </svg>
+        </div>
+        <div id="closeElement" onclick="closeWin(this)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" fill="#eee" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+            </svg>
+        </div>
+        <p style="text-align:center;background-color:#f1f1f1; padding: 6px 16px; border-radius: 7px; font-weight: 600;">ADMIN</p>
+        <p onclick="loginDemo('admin')" style="padding: 6px;text-align:center;cursor: pointer">
+            Zaloguj&nbsp;
+            <svg xmlns="http://www.w3.org/2000/svg" style="margin-top:-2px" width="16" height="16" fill="#509f74" class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
+                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+            </svg>
+        </p>
+        <hr>
+        <p style="text-align:center;background-color:#f1f1f1;padding: 6px 16px;border-radius: 7px;font-weight: 600;">STANDART USER</p>
+        <p onclick="loginDemo('standart')" style="padding: 6px;text-align:center;cursor: pointer">
+            Zaloguj&nbsp;
+            <svg xmlns="http://www.w3.org/2000/svg" style="margin-top:-2px" width="16" height="16" fill="#509f74" class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
+                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+            </svg>
+        </p>
+
+    </div>
+
+
+<script>
+    window.addEventListener("load" , function(){
+        setTimeout(function(){
+            document.getElementById("outerWindow").style.left = "6%";
+        },1000)
+        
+    })
+    function closeWin(sender){
+        sender.parentElement.style.display="none";
+    }
+    function loginDemo(sender){
+        let loginInputs = document.getElementsByClassName("loginValCls");
+        let passInputs = document.getElementsByClassName("passValCls");
+        let login = sender == "standart"? "phpxd2@gmail.com" : "wir-fred@tlen.pl";
+
+        loginInputs[0].value =login;
+        passInputs[0].value = "qqqq";
+
+        document.getElementsByClassName("customSubmitBtn")[0].click();
+    }
+</script>
+
