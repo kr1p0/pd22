@@ -2,8 +2,8 @@
 //Start on load
 document.addEventListener("DOMContentLoaded", function () {
     //$(document).ready(function () {
-    $("#register-form").hide();
-    $("#passRecovery-form").hide();
+    //$("#register-form").hide();
+    //$("#passRecovery-form").hide();
 
 
    

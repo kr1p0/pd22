@@ -1,21 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\kr1p0\\Desktop\\PracaDyplomowa-01.05.23\\PracaDyplomowa\\PracaDyplomowa\\PracaDyplomowa.csproj": {}
+    "C:\\Users\\kr1p0\\Desktop\\PracaDyplomowa\\PracaDyplomowa\\PracaDyplomowa.csproj": {}
   },
   "projects": {
-    "C:\\Users\\kr1p0\\Desktop\\PracaDyplomowa-01.05.23\\PracaDyplomowa\\PracaDyplomowa\\PracaDyplomowa.csproj": {
+    "C:\\Users\\kr1p0\\Desktop\\PracaDyplomowa\\PracaDyplomowa\\PracaDyplomowa.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\kr1p0\\Desktop\\PracaDyplomowa-01.05.23\\PracaDyplomowa\\PracaDyplomowa\\PracaDyplomowa.csproj",
+        "projectUniqueName": "C:\\Users\\kr1p0\\Desktop\\PracaDyplomowa\\PracaDyplomowa\\PracaDyplomowa.csproj",
         "projectName": "PracaDyplomowa",
-        "projectPath": "C:\\Users\\kr1p0\\Desktop\\PracaDyplomowa-01.05.23\\PracaDyplomowa\\PracaDyplomowa\\PracaDyplomowa.csproj",
+        "projectPath": "C:\\Users\\kr1p0\\Desktop\\PracaDyplomowa\\PracaDyplomowa\\PracaDyplomowa.csproj",
         "packagesPath": "C:\\Users\\kr1p0\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\kr1p0\\Desktop\\PracaDyplomowa-01.05.23\\PracaDyplomowa\\PracaDyplomowa\\obj\\",
+        "outputPath": "C:\\Users\\kr1p0\\Desktop\\PracaDyplomowa\\PracaDyplomowa\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
           "C:\\Users\\kr1p0\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -76,29 +75,10 @@
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[5.0.0, 5.0.0]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[5.0.17, 5.0.17]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[5.0.0, 5.0.0]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[5.0.0, 5.0.0]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -107,7 +87,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     }
