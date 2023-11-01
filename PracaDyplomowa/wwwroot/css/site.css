@@ -2043,6 +2043,14 @@ input[type="color"] {
     color: #0d2951dd;
 }
 
+.moveLoginRegisterPanelR, .moveLoginRegisterPanelL {
+    color: #0d2951dd !important;
+    font-weight: 700;
+    letter-spacing: 0.02em
+}
+
+
+
 #doRegisterInfo {
     float: right;
     background-color: transparent;
@@ -2054,6 +2062,8 @@ input[type="color"] {
     align-items: center;
     color: #0d2951dd;
 }
+
+
 
 .movePanelRight {
     transform: translate(210px);
