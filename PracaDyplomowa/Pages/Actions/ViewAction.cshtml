@@ -1,0 +1,135 @@
+﻿@page
+@model PracaDyplomowa.Pages.Actions.ViewActionModel
+@{
+}
+
+@using PracaDyplomowa.Models
+
+<!-- For Ajax-->
+@Html.AntiForgeryToken()
+
+<body onload="onloadViewAction()">
+
+    <ul class="nav nav-tabs mainNavTabs ">
+        <li class="nav-item ">
+            <a class="nav-link navItemMembers active" id=""
+               asp-route-selectedActionId="@Model.ActionObj.Id"
+               asp-page="/Actions/ViewAction">Podgląd</a>
+        </li>
+        @if (User.IsInRole(Models.User.UserType.Admin))
+        {
+            <li class="nav-item ">
+                <a class="nav-link navItemMembers" id=""
+                   asp-route-selectedActionId="@Model.ActionObj.Id"
+                   asp-page="/Actions/EditAction">Edytuj</a>
+            </li>
+        }
+        <li class=" " style="margin-left: auto; margin-right: 0; ">
+            @if (User.IsInRole(Models.User.UserType.Standard))
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Restricted/RestrictedMain">
+                    Wróć
+                </a>
+            }
+            else
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Actions/ActionOverview">
+                    Wróć
+                </a>
+            }
+        </li>
+    </ul>
+
+
+    <div class="innerContainer2">
+
+
+        <div id="actionViewWindow" >
+            <div class="form-row justify-content-center " style="margin-top: 25px; margin-bottom:20px; width:100%">
+
+                <div class="row formPanelContainer justify-content-center">
+
+                    <!--FIRST COLUMN-->
+                    <div class="fitstFrom2Column">
+                        <div style="padding:3%">
+                            <img class="" style="width: 100%; " src="~/img/white/cone-striped.svg">
+                        </div>
+                    </div>
+
+                    <!--SECOND COLUMN-->
+                    <div class="secondFrom2Column">
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Typ zdarzenia</label>
+                            <input type="text" class="form-control customFormInputReadOnly inputInline"
+                                   asp-for="ActionObj.TypZdarzenia" readonly>
+                        </div>
+
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="DodajAkcjeDataZdarzenia" class="mb-1 labelInline">Rozpoczecie</label>
+                            <input type="datetime" class="form-control customFormInputReadOnly inputInline"
+                                   asp-for="ActionObj.CzasZdarzenia" readonly />
+                        </div>
+
+
+
+                        <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                            <label for="DodajAkcjeDataZakonczenia" class="mb-1 labelInline">Zakonczenie</label>
+                            <input type="datetime" class="form-control customFormInputReadOnly inputInline"
+                                   asp-for="ActionObj.CzasZakonczenia" readonly>
+
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="DodajAkcjeLokalizacja" class="mb-1 labelInline">Lokalizacja</label>
+                            <textarea type="text" class="form-control customFormInputReadOnly inputInline" 
+                                   asp-for="ActionObj.Lokalizacja" readonly> </textarea>
+                        </div>
+
+
+                        <div class="form-group  mb-1  form-inline " style="margin-top:-12px">
+                            <label for="DodajAkcjeLiczebnosc" class="mb-1 labelInline">Liczebność</label>
+                            <input type="text" class="form-control customFormInputReadOnly inputInline"
+                                   value="@Model.ListOfActionParticipants.Count" readonly>
+                        </div>
+
+                        <hr />
+
+                        <div class="form-group form-inline justify-content-center" >
+                            <label for="addActionUserTable" class="mb-1 mt-3" style="font-weight: 600; font-size:1.1em;cursor:pointer" 
+                            data-toggle="collapse" data-target="#viewActionMemberTableContainer" aria-expanded="false" aria-controls="viewActionMemberTableContainer">
+                            ⌄ Biorący udział </label>
+
+                             <div class=" collapse show" id="viewActionMemberTableContainer"  style=" width: 100%;">
+                                 @if(Model.ListOfActionParticipants.Count == 0)
+                                    {
+                                        <p style="text-align:center;font-size:1.2em;color:#999">BRAK  </p>
+                                    }
+                                <table class="tableDefaultSm " id="viewActionMemberTable">
+                                <thead></thead>
+                                    @for (int i = 0; i < Model.ListOfUsers.Count; i++)
+                                        {
+                                            if (Model.ListOfActionParticipants.Contains(Model.ListOfUsers[i].UzytkownikId))
+                                            {
+                                                <tbody>
+                                                    <tr class="" style=" cursor: pointer">
+                                                  
+                                                        <td data-label="">
+                                                                @CustomStr.Adjust(Model.ListOfUsers[i].Imie + " " + 
+                                                            Model.ListOfUsers[i].Nazwisko,20)
+                                                                <input type="hidden" value="@Model.ListOfUsers[i].UzytkownikId" readonly />
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            }
+                                        }
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

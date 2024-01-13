@@ -1,0 +1,275 @@
+﻿@page
+@model PracaDyplomowa.Pages.QRCode.QRCodeGenerateModel
+
+@using PracaDyplomowa.Models
+
+
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
+
+
+<script>
+
+    var selectedEquipmentId = null;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        animateQrPanelOnStart();
+        selectedEquipmentId = document.getElementById("selectItemForQr").value;
+    });
+
+    function animateQrPanelOnStart() {
+        setTimeout(function () {
+            document.getElementById("a4DiemensionsWin").style.marginLeft = "40px";
+        }, 400);
+
+        setTimeout(function () {
+            document.getElementById("a4DiemensionsWin").style.marginLeft = "15px";
+        }, 1000);
+    }
+
+    function generateQr() {
+
+        document.getElementById("generatedGrcodePreview").innerHTML = "";
+        document.getElementById("generatedGrcodeTrueSize").innerHTML = "";
+
+
+        var itemLocation = location.toString()
+        itemLocation = itemLocation.substring(0, itemLocation.indexOf('QRCode'));
+        itemLocation += "Equipment/ViewEquipment?selectedEquipmentId=" + selectedEquipmentId;
+
+        if (selectedEquipmentId == null || selectedEquipmentId == undefined || selectedEquipmentId == ""){
+            alert("Należy wybrać urządzenie")
+            return;
+        }
+
+
+        new QRCode(document.getElementById("generatedGrcodePreview"), {
+            text: itemLocation,
+            width: 260,
+            height: 260,
+            colorDark: "#5868bf",
+            colorLight: "transparent",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+
+        new QRCode(document.getElementById("generatedGrcodeTrueSize"), {
+            text: itemLocation,
+            width: document.getElementById("displayQrSizeX").value,
+            height: document.getElementById("displayQrSizeY").value,
+            colorDark: "#000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        $("#generatedGrcodePreviewContainer").slideDown(300);
+        document.getElementById("innerContainer2").style.filter = 'blur(5px)';
+        document.getElementById("innerContainer2").style.pointerEvents = "none";
+
+    }
+
+
+    function getSelectedEquipmentItem(sender) {
+        //selectedEquipmentItem = sender.selectedIndex - 1
+        selectedEquipmentId = sender.value;
+    }
+
+
+
+    function copyQrSizeValue(sender) {
+        if (sender > 2199) {
+            document.getElementById("displayQrSizeX").value = 2200;
+            document.getElementById("displayQrSizeY").value = 2200;
+        }
+        document.getElementById("displayQrSizeY").value = document.getElementById("displayQrSizeX").value;
+        document.getElementById("compareQrDiemensionsToA4").style.width = document.getElementById("displayQrSizeX").value / 8 + "px";
+        document.getElementById("compareQrDiemensionsToA4").style.height = document.getElementById("displayQrSizeY").value / 8 + "px";
+    }
+
+
+    function printQr() {
+        //document.getElementById("generatedGrcodeTrueSize").style.display = "";
+
+        $("#generatedGrcodePreviewContainer").slideUp(300);
+        document.getElementById("innerContainer2").style.filter = 'blur(0)';
+        document.getElementById("innerContainer2").style.pointerEvents = "";
+
+
+        var qrWidthValue = document.getElementById("displayQrSizeX").value
+        var qrHightValue = document.getElementById("displayQrSizeY").value;
+        var equipmentId = document.getElementById("selectItemForQr").value;
+
+        sessionStorage.setItem("qrWidthValue", qrWidthValue);
+        sessionStorage.setItem("qrHightValue", qrHightValue);
+        sessionStorage.setItem("equipmentId", equipmentId);
+
+        var newLocation = location.toString()
+        newLocation = newLocation.substring(0, newLocation.indexOf('QRCode'));
+        newLocation += "QRCode/QrPreview";
+        //window.location.href = newLocation;
+        window.open(newLocation, 'name');
+
+
+        //window.print();
+        //document.getElementById("generatedGrcodeTrueSize").style.display = "none";
+    }
+
+    function closeQrPreviewWin() {
+        $("#generatedGrcodePreviewContainer").slideUp(300);
+        document.getElementById("innerContainer2").style.filter = 'blur(0)';
+        document.getElementById("innerContainer2").style.pointerEvents = "";
+    }
+</script>
+
+<style>
+    .slider {
+        -webkit-appearance: none;
+        width: 30%;
+        height: 10px;
+        border-radius: 5px;
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.7;
+    }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: #04AA6D;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #04AA6D;
+            cursor: pointer;
+        }
+</style>
+
+<div class="innerContainer3">
+
+    <div id="innerContainer2" class="hideOnPrint">
+        <div class="row  justify-content-center" style="margin: 40px 0 0 0;">
+
+
+            <!-- First column -->
+            <div class=" mb-1" id="selectItemForQrContainer">
+
+                <div class="mb-3" >
+
+                    <label for="selectItemForQr"> Wybierz urządzenie</label>
+                    <select class="form-control selectItemForQr  bg-white mb-2 selectWithSearch" id="selectItemForQr"
+                            oninput="getSelectedEquipmentItem(this)">
+
+                        @if (string.IsNullOrEmpty(Model.selectedEquipmentId))
+                        {
+                            <option value="" disabled selected>Wybierz...</option>
+                        }
+                        @for (int i = 0; i < @Model.EquipmentInfo.Count; i++)
+                        {
+                            @if (Model.EquipmentInfo[i].Id == Model.selectedEquipmentId)
+                            {
+                                <option selected value="@Model.EquipmentInfo[i].Id">
+                                    @(CustomStr.Adjust(Model.EquipmentInfo[i].Producent,15) +" \n "+
+                                CustomStr.Adjust(Model.EquipmentInfo[i].Model,30)+" | Sn: "+
+                                CustomStr.Adjust(Model.EquipmentInfo[i].Sn, 40))
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@Model.EquipmentInfo[i].Id">
+                                    @(CustomStr.Adjust(Model.EquipmentInfo[i].Producent,15) +"  "+
+                                CustomStr.Adjust(Model.EquipmentInfo[i].Model,30)+" | Sn: "+
+                                CustomStr.Adjust(Model.EquipmentInfo[i].Sn, 40))
+                                </option>
+                            }
+
+                        }
+                    </select>
+                </div>
+
+
+
+                <label for="displayQrSizeX" >Rozmiar(px)</label>
+                <div class="input-group mb-2 selectItemForQr">
+
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"> X </div>
+                    </div>
+
+                    <input type="number" id="displayQrSizeX" value="256" class="form-control selectItemForQr"
+                           oninput="copyQrSizeValue(this.value)">
+                </div>
+
+
+                <div class="input-group mb-2 selectItemForQr">
+
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"> Y </div>
+                    </div>
+
+                    <input type="number" id="displayQrSizeY" value="256" class="form-control selectItemForQr" readonly>
+                </div>
+
+
+
+
+
+                <button class="btn  mt-5" onclick="generateQr()">Generuj kod QR</button>
+
+
+            </div>
+
+
+            <!-- Second column -->
+            <div class="" style="float:left">
+
+                <div class="panelTransitions secondCOlumnQrGenerator" id="a4DiemensionsWin">
+
+                    <div id="compareQrDiemensionsToA4" style=" width:35px;height:35px">
+                        <img style="height:100%" src="~/img/black/qr-code.svg">
+                    </div>
+
+                    <div id="fomratA4Background">
+                        <p> Format A4</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Qr code preview -->
+    <div id="generatedGrcodePreviewContainer" class="hideOnPrint" style="top: 0; display: none; position: absolute;
+        background-color:#242628; opacity:0.95;padding:10px 20px ;left: 50%; transform: translate(-50%, 0);
+        border-radius:10px">
+        <div id="generatedGrcodePreview" style="padding:10px 20px;margin-bottom:7px">
+        </div>
+        <input type="button" class="btn btn-secondary" value="Zamknij" style="float:right; margin: 0 10px"
+               onclick="closeQrPreviewWin()" />
+        <input type="button" class="btn btn-secondary" value="Drukuj" style="float:right" onclick="printQr()" />
+    </div>
+
+
+    <div id="generatedGrcodeTrueSize" style="display:none;"></div>
+
+
+
+</div>
+
+
+
+
+
+
+

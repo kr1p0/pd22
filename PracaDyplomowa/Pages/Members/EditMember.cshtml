@@ -1,0 +1,245 @@
+﻿@page
+@model PracaDyplomowa.Pages.Members.EditMemberModel
+@{
+}
+
+
+<input type="hidden" asp-for="UserInfo.UzytkownikId" />
+<input type="hidden" asp-for="UserInfo.PowiazanyEventId" />
+<input type="hidden" asp-for="Status4Compare" /> <!--for comparing with new status-->
+
+<ul class="nav nav-tabs mainNavTabs" >
+    <li class="nav-item ">
+        <a class="nav-link navItemMembers " id=""
+           asp-route-selectedMemberId="@Model.UserInfo.UzytkownikId"
+           asp-page="/Members/ViewMember">Podgląd</a>
+    </li>
+    <li class="nav-item ">
+        <a class="nav-link navItemMembers active" id="mamberEditTab"
+           asp-route-selectedMemberId="@Model.UserInfo.UzytkownikId"
+           asp-page="/Members/EditMember">Edytuj</a>
+    </li>
+    <li class="nav-item ">
+        <a class="nav-link navItemMembers" id=""
+           asp-route-selectedMemberId="@Model.UserInfo.UzytkownikId"
+           asp-page="/Members/EditPassword">Zmień hasło</a>
+    </li>
+    <li class=" " style="margin-left: auto; margin-right: 0; ">
+        @if (User.IsInRole(Models.User.UserType.Standard))
+        {
+            <a class="nav-link goBackNavBarBtn" asp-page="/Restricted/RestrictedMain">
+                Wróć
+            </a>
+        }
+        else
+        {
+            <a class="nav-link goBackNavBarBtn" asp-page="/Members/MembersOverview">
+                Wróć
+            </a>
+        }
+    </li>
+</ul>
+
+
+<div class="innerContainer2">
+
+    <form method="post" id="editMemberForm" class="displaySpinner" enctype="multipart/form-data">
+        <!-- !!!!enctype , because of image upload-->
+        <div id="memberEditWindow" class="m-3">
+            <div class="form-row justify-content-center" style="margin-top: 40px; width:100% ">
+
+
+                <div class="row formPanelContainer  justify-content-center">
+
+                    <!--FIRST COLUMN-->
+                    <div class=" fitstFrom2Column">
+                        <div class="fitstFrom2ColumnBtns">
+                            <a href="~/uploads/img/avatar/@Model.UserInfo.ImgNazwa" target="_blank">
+                                <img class="" style="width: 100%; border-radius:6px" src="~/uploads/img/avatar/@Model.UserInfo.ImgNazwa"
+                                     onerror="this.src='/img/gray/person-fill.svg'">
+                            </a>
+
+                                <div class="input-group justify-content-center mt-1">
+                                    <input type="submit" class="btn btn-light btn-sm m-1" value="Zapisz"
+                                           asp-route-userId=@Model.UserInfo.UzytkownikId
+                                           asp-route-relatedEventId="@Model.UserInfo.PowiazanyEventId"
+                                           asp-route-previousStatus="@Model.Status4Compare"
+                                           asp-page-handler="UpdateUserData" />
+
+                                    <a class="btn btn-light btn-sm  m-1 " asp-route-userId=@Model.UserInfo.UzytkownikId
+                                       asp-page-handler="DeleteUser" asp-page="" onclick="waitSpinner()">
+                                        &nbsp;Usuń&nbsp;
+                                    </a>
+                                </div>
+                        </div>
+                    </div>
+
+                    <!--SECOND COLUMN-->
+                    <div class="secondFrom2Column">
+
+                        <!--ALTERNATIVE 4 FIRST COLUMN-->
+                        <div class="alternativeElement">
+                            <input type="submit" class="btn btn-light btn-sm mr-2" value="Zapisz"
+                                   asp-route-userId=@Model.UserInfo.UzytkownikId
+                                   asp-route-relatedEventId="@Model.UserInfo.PowiazanyEventId"
+                                   asp-page-handler="UpdateUserData" />
+
+                            <a class="btn btn-light btn-sm " asp-route-userId=@Model.UserInfo.UzytkownikId
+                               asp-page-handler="DeleteUser" asp-page="/Members/EditMember">
+                                &nbsp;Usuń&nbsp;
+                            </a>
+                        </div>
+                        <!--ALTERNATIVE-->
+
+                        <div class="form-group mb-0 form-inline" style="margin-top:-12px">
+                            <label for="userDataImieE" class="mb-1 labelInline">Imię</label>
+                            <input type="text" class="inputInline form-control customFormInputv2 "
+                                   id="userDataImieE" asp-for="UserInfo.Imie" required>
+                        </div>
+
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataNazwiskoE" class="mb-1 labelInline">Nazwisko</label>
+                            <input type="text" class="form-control customFormInputv2 inputInline"
+                                   id="userDataNazwiskoE" asp-for="UserInfo.Nazwisko" required>
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataUlicaE" class="mb-1 labelInline">Ulica</label>
+                            <input type="text" class="form-control customFormInputv2 inputInline"
+                                   id="userDataUlicaE" asp-for="UserInfo.Ulica" required>
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataMiejscowoscE" class="mb-1 labelInline">Miejscowość</label>
+                            <input type="text" class="form-control customFormInputv2 inputInline"
+                                   id="userDataMiejscowoscE" asp-for="UserInfo.Miejscowosc" required>
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataKodPocztE" class="mb-1 labelInline">Kod pocztowy</label>
+                            <input type="text" class="form-control customFormInputv2 inputInline"
+                                   id="userDataKodPocztE" asp-for="UserInfo.KodPocztowy" required>
+                        </div>
+
+
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataEmailE" class="mb-1 labelInline">E-mail</label>
+                            <input type="email" class="form-control customFormInputv2 inputInline"
+                                   id="userDataEmailE" asp-for="UserInfo.Email" required>
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataTelefonE" class="mb-1 labelInline">Telefon</label>
+                            <input type="text" class="form-control customFormInputv2 inputInline"
+                                   id="userDataTelefonE" asp-for="UserInfo.Telefon" required>
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataFunkcjaE" class="mb-1 labelInline">Funkcja</label>
+                            <input type="text" class="form-control customFormInputv2 inputInline"
+                                   id="userDataFunkcjaE" asp-for="UserInfo.Funkcja" >
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataDataWstapieniaE" class="mb-1 labelInline">Data Wstąpienia</label>
+                            <input type="date" class="form-control customFormInputv2 inputInline"
+                                   id="userDataDataWstapieniaE" asp-for="UserInfo.DataWstapienia" required>
+                        </div>
+
+                        <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataWaznoscBadanE" class="mb-1 labelInline">Ważność badań</label>
+                            <input type="date" class="form-control customFormInputv2 inputInline" id="userDataWaznoscBadanE"
+                                   asp-for="UserInfo.WaznoscBadan">
+                        </div>
+
+                        <div class="form-group mb-1  form-inline " style="margin-top:-12px">
+                            <label for="userDataStatusE" class="mb-1 labelInline">Status</label>
+                            <select class="form-control customSelectInput inputInline"
+                                    id="userDataStatusE" asp-for="UserInfo.Status" required>
+                                @if (@Model.UserInfo.Status == Models.StandbyStatus.Niedostepny)
+                                {
+                                    <option>@Models.StandbyStatus.Dostepny </option>
+                                    <option selected>@Models.StandbyStatus.Niedostepny </option>
+                                }
+                                else
+                                {
+                                    <option selected>@Models.StandbyStatus.Dostepny </option>
+                                    <option> @Models.StandbyStatus.Niedostepny </option>
+                                }
+                            </select>
+                        </div>
+
+                        @if (User.IsInRole(Models.User.UserType.Admin))
+                        {
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="userTypeE" class="mb-1 labelInline">Uprawnienia</label>
+                                <select class="form-control customSelectInput inputInline"
+                                        id="userTypeE" asp-for="UserInfo.TypKonta" required>
+                                    @if (Model.UserInfo.TypKonta == Models.User.UserType.Admin)
+                                    {
+                                        <option>@Models.User.UserType.Standard </option>
+                                        <option selected>@Models.User.UserType.Admin </option>
+                                    }
+                                    else
+                                    {
+                                        <option selected>@Models.User.UserType.Standard </option>
+                                        <option> @Models.User.UserType.Admin </option>
+                                    }
+                                </select>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                                <label for="userTypeE" class="mb-1 labelInline">Uprawnienia</label>
+                                <input type="text" class="form-control customFormInputReadOnly inputInline"
+                                       id="userTypeE" asp-for="UserInfo.TypKonta" readonly>
+                            </div>
+                        }
+
+
+
+                        <div class="form-group  mb-1  form-inline " style="margin-top:-12px">
+                            <label for="userDataFileUploadE" class="mb-1 labelInline">Avatar</label>
+                            <input type="file" class="form-control customFormFileInput inputInline" id="userDataFileUploadE"
+                                   asp-for="uploadedLogo" accept=".gif,.jpg,.jpeg,.png">
+                        </div>
+
+                        @if (User.IsInRole(Models.User.UserType.Admin))
+                        {
+
+                            <hr />
+                            <div class="form-group form-inline justify-content-center mt-2" >
+                                <a class="btn customYellowBtn " title=""
+                               asp-route-selectedUserId="@Model.UserInfo.UzytkownikId" asp-page="/Equipment/EquipmentOverview">
+                                    <img src="~/img/black/pencil-square.svg">
+                                    Edytuj przypisany sprzęt
+                                </a>
+                            </div>
+
+                            <div class="form-group form-inline justify-content-center mt-2" >
+                                <a class="btn customYellowBtn  " title=""
+                                asp-route-selectedUserId="@Model.UserInfo.UzytkownikId" asp-page="/Members/courses">
+                                    <img src="~/img/black/pencil-square.svg">
+                                    Edytuj ukończone kursy  &nbsp
+                                </a>
+                            </div>
+
+                            <div class="form-group form-inline justify-content-center mt-2" >
+                                <a class="btn customYellowBtn " title=""
+                                 asp-route-selectedUserId="@Model.UserInfo.UzytkownikId" asp-page="/Actions/ActionOverview">
+                                    <img src="~/img/black/pencil-square.svg">
+                                    Edytuj przypisane akcje   &nbsp
+                                </a>
+                            </div>
+                        }
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,154 @@
+﻿@page
+@model PracaDyplomowa.Pages.Competition.AddCompetitionModel
+@{
+}
+
+@using PracaDyplomowa.Models
+
+<!-- For Ajax-->
+@Html.AntiForgeryToken()
+
+<body onload="onloadAddCompetition()">
+    <ul class="nav nav-tabs mainNavTabs ">
+        <li class="p-2">
+            <span style="color: #fff; font-weight: 600; font-size: 1em">Dodaj akcje</span>
+        </li>
+
+        <li class=" " style="margin-left: auto; margin-right: 0; ">
+            @if (User.IsInRole(Models.User.UserType.Standard))
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Restricted/RestrictedMain">
+                    Wróć
+                </a>
+            }
+            else
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Competition/CompetitionOverview">
+                    Wróć
+                </a>
+            }
+        </li>
+    </ul>
+
+    <div class="innerContainer2">
+
+        <form method="post" id="addCompetitionForm" class="displaySpinner">
+            <div id="addCompetitionWindow" class="m-3">
+                <div class="form-row justify-content-center " style="margin-top: 25px; margin-bottom:20px; width:100%">
+
+                    <div class="row formPanelContainer justify-content-center">
+
+                        <!--FIRST COLUMN-->
+                        <div class="fitstFrom2Column">
+                            <div class="fitstFrom2ColumnBtns">
+                                <div style="padding:3%">
+                                    <img class="" style="width: 100%; "
+                                         src="~/img/white/stopwatch-fill.svg">
+                                </div>
+                                <div class="input-group justify-content-center mt-1">
+                                    <input type="submit" class="btn btn-light btn-sm m-1" value="Zapisz" />
+                                </div>
+                            </div>
+                        </div>
+
+                            <!--SECOND COLUMN-->
+                            <div class="secondFrom2Column">
+
+                                <!--ALTERNATIVE 4 FIRST COLUMN-->
+                                <div class="alternativeElement" >
+                                    <input type="submit" class="btn btn-light btn-sm mr-2" value="Zapisz" />
+                                </div>
+                                <!--ALTERNATIVE-->
+
+                                <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                    <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Kategoria</label>
+                                    <input type="text" class="form-control customFormInputv2 inputInline" id="DodajZawodyKategoria"
+                                           required>
+                                </div>
+
+
+                                <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                    <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Szczebel</label>
+                                    <input type="text" class="form-control customFormInputv2 inputInline" id="DodajZawodySzczebel"
+                                           required>
+                                </div>
+
+
+                                <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                    <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Miejsce</label>
+                                    <input type="number" class="form-control customFormInputv2 inputInline" id="DodajZawodyMiejsce"
+                                           required>
+                                </div>
+
+                                <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                    <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Uczestników</label>
+                                    <input type="text" class="form-control customFormInputv2 inputInline" id="DodajZawodyIloscUczestnikow"
+                                           readonly>
+                                </div>
+
+                                <div class="form-group  mb-4  form-inline " style="margin-top:-12px">
+                                    <label for="DodajAkcjeDataZakonczenia" class="mb-1 labelInline">Data</label>
+                                    <input type="date" class="form-control customFormInputv2 inputInline" id="DodajZawodyData"
+                                           value=@DateTime.Now.ToString("yyyy-MM-dd") required>
+
+                                </div>
+
+                            
+
+                                <div class="form-group  form-inline justify-content-center" >
+                                   <label for="addActionUserTable" class="mb-1 mt-3" style="font-weight: 600; font-size:1.1em;cursor:pointer" 
+                                    data-toggle="collapse" data-target="#addCompetitionUserTableContainer" aria-expanded="false" aria-controls="addCompetitionUserTableContainer">
+                                    ⌄ Uczestnicy </label>
+                                <div class=" collapse show" id="addCompetitionUserTableContainer"  style=" width: 100%;">
+                                 @if(Model.ListOfUsers.Count == 0)
+                                    {
+                                        <p style="text-align:center;font-size:1.2em;color:#999">BRAK  </p>
+                                    }
+                                    <table class="tableDefaultSm " id="addCompetitionUserTable">
+                                        <thead></thead>
+                                        @{
+                                            for (int i = 0; i < Model.ListOfUsers.Count; i++)
+                                            {
+                                                if (@Model.ListOfUsers[i].Zatwierdzony == "n")
+                                                {
+                                                    continue;
+                                                }
+                                                <tbody>
+                                                    <tr class="" style=" cursor: pointer" onclick="addMemberCompetitionTableOnClick(this)">
+
+                                                        <td data-label="" style="width:0">
+                                                            <input type="checkbox" class="ActionCheckBox" style="display:none" onclick="return false;" />
+                                                        </td>
+
+                                                        <td style="display:none">
+                                                            <input type="hidden" value="@Model.ListOfUsers[i].UzytkownikId" readonly />
+                                                        </td>
+
+                                                        <td style="display:none">
+                                                            <input type="hidden" value="@Model.ListOfUsers[i].Jednostka_id" readonly />
+                                                        </td>
+
+                                                        <td data-label="">
+                                                            <div style="display:grid">
+                                                                <div>
+                                                                    @(CustomStr.Adjust(Model.ListOfUsers[i].Imie)+" ")
+                                                                    @CustomStr.Adjust(Model.ListOfUsers[i].Nazwisko)
+                                                                </div>
+                                                                <input class="form-control form-control-sm mt-2 competitionRoleInput" placeholder="Rola"
+                                                                       style="display:none;border-radius:6px ; border:0; text-align:center;" />
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            }
+                                        }
+                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>

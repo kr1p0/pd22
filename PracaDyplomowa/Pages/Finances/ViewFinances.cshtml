@@ -1,0 +1,102 @@
+﻿@page
+@model PracaDyplomowa.Pages.Finances.ViewFinancesModel
+@{
+}
+
+<body>
+    <ul class="nav nav-tabs mainNavTabs ">
+        <li class="nav-item ">
+            <a class="nav-link navItemMembers active" id=""
+               asp-route-selectedFinancesId="@Model.ViewFinances.Id"
+               asp-page="/Finances/ViewFinances">Podgląd</a>
+        </li>
+        <li class="nav-item ">
+            <a class="nav-link navItemMembers " id=""
+               asp-route-selectedFinancesId="@Model.ViewFinances.Id"
+               asp-page="/Finances/EditFinances">Edytuj</a>
+        </li>
+        <li class=" " style="margin-left: auto; margin-right: 0; ">
+            @if (User.IsInRole(Models.User.UserType.Standard))
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Restricted/RestrictedMain">
+                    Wróć
+                </a>
+            }
+            else
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Finances/FinancesOverview">
+                    Wróć
+                </a>
+            }
+        </li>
+    </ul>
+
+    <div class="innerContainer2">
+
+        <form method="post" id="addActionForm" class="displaySpinner">
+            <div id="reminderViewWindow" class="m-3">
+                <div class="form-row justify-content-center " style="margin-top: 25px; margin-bottom:20px; width:100%">
+
+                    <div class="row formPanelContainer justify-content-center">
+
+                        <!--FIRST COLUMN-->
+                        <div class="fitstFrom2Column">
+                            <div style="padding:3%">
+                                <img class="" style="width: 100%; "
+                                     src="~/img/white/safe2-fill.svg">
+                            </div>
+                        </div>
+
+                        <!--SECOND COLUMN-->
+                        <div class="secondFrom2Column">
+
+
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Dokument</label>
+                                <input type="text" class="form-control customFormInputReadOnly inputInline"
+                                       asp-for="ViewFinances.Dokument" readonly>
+                            </div>
+
+                            <div class="orm-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="PrzypOdbiorcy" class="mb-1 labelInline">Opis</label>
+                                <textarea class="form-control customFormInputReadOnly inputInline" rows="3"
+                                          asp-for="ViewFinances.Opis" readonly>
+                            </textarea>
+                            </div>
+
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Kwota</label>
+                                <input type="number" class="form-control customFormInputReadOnly inputInline" id=""
+                                       asp-for="ViewFinances.Kwota" readonly>
+                            </div>
+
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Typ </label>
+                                <input type="text" class="form-control customFormInputReadOnly inputInline" id=""
+                                       asp-for="ViewFinances.TypTransakcji" readonly>
+                            </div>
+
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Odbiorca</label>
+                                <input type="text" class="form-control customFormInputReadOnly inputInline"
+                                       asp-for="ViewFinances.Odbiorca" readonly>
+                            </div>
+
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Źrodło</label>
+                                <input type="text" class="form-control customFormInputReadOnly inputInline"
+                                       asp-for="ViewFinances.Zrodlo" readonly>
+                            </div>
+
+                            <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeDataZakonczenia" class="mb-1 labelInline">Data</label>
+                                <input type="date" class="form-control customFormInputReadOnly inputInline" id=""
+                                       asp-for="ViewFinances.DataTransakcji" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>

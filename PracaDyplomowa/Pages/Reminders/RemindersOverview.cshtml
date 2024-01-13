@@ -1,0 +1,164 @@
+﻿@page
+@model PracaDyplomowa.Pages.Reminders.RemindersOverviewModel
+@{
+}
+@using PracaDyplomowa.Models;
+<!--for js communication-->
+<input class="backendALert" type="hidden" runat="server" value="@Model.passAlert">
+
+<body onload="onloadReminderOverview()">
+
+
+    <div class="upperMenuBar">
+        <div class="dropdown">
+            <button class="btn btn-light btn-sm dropdown-toggle dropdownMenuMenuBar" type="button"
+                     data-toggle="dropdown" aria-expanded="false">
+              
+            </button>
+            <div class="dropdown-menu shadow p-3" aria-labelledby="dropdownMenuButton"
+                    style="background-color: #f0f2f5; border: solid thin #d0d2d5 ">
+                <form method="post">
+                    <p class=" bg-dark text-white p-1" style="border-radius:4px">Filtruj:</p>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="customRadioFilter1" name="customRadioFilter"
+                                class="custom-control-input" value="current" checked>
+                        <label class="custom-control-label" style="white-space:nowrap"
+                                for="customRadioFilter1">Wyswietl aktualne</label>
+                    </div>
+                    <div class="custom-control custom-radio mb-3">
+                        <input type="radio" id="customRadioFilter2" name="customRadioFilter"
+                                class="custom-control-input" value="all">
+                        <label class="custom-control-label" style="white-space:nowrap"
+                                for="customRadioFilter2">Wyswietl wszystkie</label>
+                    </div>
+
+                    <p class="bg-dark text-white p-1 " style="border-radius:4px">Sortuj:</p>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="customRadioSort1" name="customRadioSort" value="title"
+                                class="custom-control-input">
+                        <label class="custom-control-label" for="customRadioSort1">Tytuł</label>
+                    </div>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="customRadioSort2" name="customRadioSort" value="content"
+                                class="custom-control-input">
+                        <label class="custom-control-label" for="customRadioSort2">Treść</label>
+                    </div>
+                    <div class="custom-control custom-radio mb-3">
+                        <input type="radio" id="customRadioSort3" name="customRadioSort" value="date"
+                                class="custom-control-input" checked>
+                        <label class="custom-control-label" for="customRadioSort3">Data</label>
+                    </div>
+
+                    <input type="submit" style="width:100%" class="btn btn-dark" value="Zapisz"
+                            asp-page-handler="SaveDisplayOptions" />
+                </form>
+            </div>
+        </div>
+
+      
+        <a class="btn btn-secondary btn-sm ml-3" style="color:white" title="Dodaj" asp-page="/Calendar/CalendarView">
+           Dodaj
+        </a>
+  
+
+        <div style="width:100%">
+            <input type="search" id="searchReminderOverviewInput" placeholder="Szukaj"
+                    style="float: right; width: 40%; min-width: 58px;"
+                    class="btn btn-sm btn-light" oninput="searchRemindersOverview()" />
+        </div>
+    </div>
+    
+
+
+    <div class="innerContainer" style=" overflow-x: auto;">
+        @{
+            if (@Model.ReminderList.Count == 0)
+            {
+                <div class="row  justify-content-center mt-4" style="width:100%">
+                    <h3> BRAK PRZYPOMNIEŃ </h3>
+                </div>
+
+                return;
+            }
+
+        }
+
+        <table id="reminderTable" class="tableDefault"  style=" overflow-x: auto;">
+            <thead>
+                <tr style="position: sticky; top: 0;">
+                    <th scope="col" id="reminderTableLpColumnHead">Lp.</th>
+                    <th scope="col">Powiadomienie</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Forma</th>
+                    <th scope="col">Akcja</th>
+                </tr>
+            </thead>
+
+
+            @{
+                for (int i = 0; i < @Model.ReminderList.Count; i++)
+                {
+                    <tbody>
+                        <tr class="" style=" cursor: pointer">
+                       
+                            <td data-label="Lp." id="reminderTableLpColumnBody">
+                                @(i+1+".")
+                                <input type="hidden" value=@Model.ReminderList[i].Id />
+                            </td>
+                            <td data-label="Powiadomienie">
+                                <div id="reminderTableReminderTitle">
+                                    <div style="background-color:@Model.ReminderList[i].TloHex;
+                                            color: @Model.ReminderList[i].CzcionkaHex;
+                                            border-radius:0.35em;margin:2px 0;
+                                            padding:0.1em 0.6em;font-weight:600;">
+                                        @CustomStr.Adjust(Model.ReminderList[i].Tytul, 17)
+                                    </div>
+                                </div>
+
+                                <div style="word-wrap: break-word;">
+                                    @CustomStr.Adjust(Model.ReminderList[i].Tresc ,21)
+                                </div>
+
+                            </td>
+                            <td data-label="Data">@Model.ReminderList[i].CzasRozpoczecia</td>
+
+                            <td data-label="Forma">
+                                @if (@Model.ReminderList[i].PowiadomienieEmail == "t")
+                                {
+                                    <img class="ml-1 mr-1" style="height: 1.5em" src="~/img/black/envelope-check.svg">
+                                }
+                                @if (@Model.ReminderList[i].PowiadomienieTelefon == "t")
+                                {
+                                    <img class="ml-1" style="height: 1.5em" src="~/img/black/phone-vibrate.svg">
+                                }
+
+                            </td>
+
+                            <td data-label="Akcja" >
+                                <form method="post" class="displaySpinner">
+                                    <div style="" class="tableButtonCellContainerInline"> 
+                                        <div class="tableButtonCell">
+                                            <input type="submit" class="btn  btn-outline-secondary tableButtonDel" value=""
+                                                  title="Usuń" asp-route-delNotiId="@Model.ReminderList[i].Id"
+                                                   asp-page-handler="RemoveById" />
+                                        </div>
+
+                                        <div class="tableButtonCell">
+                                            <a id="" class="btn btn-outline-secondary tableButtonEdit"
+                                               title="Edytuj" asp-page="/Reminders/EditReminder"
+                                               asp-route-selectedReminderId="@Model.ReminderList[i].Id"> </a>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </td>
+
+                        </tr>
+                    </tbody>
+                }
+            }
+
+
+        </table>
+    </div>
+</body>

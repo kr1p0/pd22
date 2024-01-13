@@ -1,0 +1,92 @@
+﻿@page
+@model PracaDyplomowa.Pages.Restricted.RestrictedMainModel
+@{
+}
+
+@using PracaDyplomowa.Models
+
+<!-- For Ajax-->
+@Html.AntiForgeryToken()
+
+<body onload="restrictedMainOnload()">
+
+    <div class="innerContainer4">
+
+        <div class="row justify-content-center mt-5" style="width:100%">
+            <form method="post" id="restrictedInnerContainer" class="row justify-content-center">
+
+
+                <button class="mainMenuBox mainMenuBox1" asp-page-handler="GoToUserData">
+                    <p>Dane użytkownika</p>
+                    <img src="~/uploads/img/@Model.UserInfo.ImgNazwa" alt=""
+                         onerror="this.src='/img/white/person-fill.svg'" class="avatar">
+                </button>
+
+
+                <button class="mainMenuBox mainMenuBox2" asp-page-handler="GoToChat">
+                    <span class="restrictednotiDot" id="restrictedChatnotiDot">@Model.NumberOfUnreadMsgs</span>
+                    <p class="mt-2">Czat</p>
+                    <img class="mainMenuBoxChatImg" src="~/img/white/chat-dots-fill.svg" />
+                </button>
+
+
+                <div class="mainMenuBox mainMenuBox3 text-center">
+                    <p class="mb-3 mt-2">Aktualizuj status</p>
+                    @if (Model.UserInfo.Status == Models.User.StandbyStatus.Dostepny)
+                    {
+                        <span id="displayStatusR">@Models.User.StandbyStatus.Dostepny</span>
+                        <label class="switch m-2">
+                            <input type="checkbox" checked id="restrictedMainStatusSwich" oninput="onRestrictedMainStatusSwich()">
+                            <span class="slider"></span>
+                        </label>
+                    }
+                    else
+                    {
+                        <span id="displayStatusR">@Models.User.StandbyStatus.Niedostepny</span>
+                        <label class="switch m-2">
+                            <input type="checkbox" id="restrictedMainStatusSwich" oninput="onRestrictedMainStatusSwich()">
+                            <span class="slider"></span>
+                        </label>
+                    }
+
+                </div>
+
+
+
+                <button class="mainMenuBox mainMenuBox4 text-center" asp-page-handler="GoToAnnouncements">
+                    <span class="restrictednotiDot" id="restrictedAnnouncementnotiDot">@Model.NumberOfUnreadAnnouncements</span>
+                    <span>Ogłoszenia</span>
+                    <hr />
+                    <ul class="announcementList" id="announcementListIdent" style="font-size:0.9em">
+                        @for (int i = 0; i < Model.AnnouncementLi.Count; i++)
+                        {
+                            <li class="mt-1">
+                                @CustomStr.Adjust(Model.AnnouncementLi[i].Tytul, 14)
+                            </li>
+                            <li class="restrictedAnnouncementList">
+                                @Model.AnnouncementLi[i].Data
+                            </li>
+                        }
+                    </ul>
+                </button>
+
+
+                <button class="mainMenuBox mainMenuBox5 text-center" asp-page-handler="GoToCalendar">
+                    <span class="restrictednotiDot" id="restrictedAnnouncementnotiDot">@Model.NumberOfEventsToday</span>
+                    <p class="mt-2">Wydarzenia</p>
+                    <img class="mainMenuBoxChatImg" src="~/img/white/calendar-week-fill.svg" />
+                </button>
+
+
+                <button class="mainMenuBox mainMenuBox6 text-center" asp-page-handler="GoToStatistics">
+
+                    <p class="mt-2">Statystyki</p>
+                    <img class="mainMenuBoxStatImg" src="~/img/black/pie-chart-fill-custom.svg" />
+                </button>
+
+
+            </form>
+        </div>
+    </div>
+
+</body>

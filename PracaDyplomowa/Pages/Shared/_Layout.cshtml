@@ -1,0 +1,417 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<!-- For Ajax-->
+@Html.AntiForgeryToken()
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PDD</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
+    <!--
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        -->
+
+
+    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+    <script>
+        window.OneSignal = window.OneSignal || [];
+        OneSignal.push(function () {
+            OneSignal.init({
+                appId: "17f187b9-f2f9-4a46-9359-9c8966e4a717",
+            });
+        });
+    </script>
+
+
+
+</head>
+<body>
+
+    <input id="IsAuthenticatedCheck" readonly type="hidden" value=@(User.Identity.IsAuthenticated ? "authenticated" : "") />
+    <input id="IsAdminCheck" type="hidden" readonly value=@(User.IsInRole(Models.User.UserType.Admin) ? "adminUser" : "") />
+
+
+
+    <header class="hideOnPrint">
+        <nav class="customNavBar navbar navbar-expand-sm navbar-toggleable-sm navbar-light
+             border-bottom box-shadow mb-3">
+            <div class="container">
+
+
+
+                @if (User.Identity.IsAuthenticated && User.IsInRole(Models.User.UserType.Admin))
+                {
+                    <button type="button" id="extendSidebarBtnContainer" onclick="extendSidebar()">
+                        <img id="extendSidebarBtn" src="~/img/white/three-dots-vertical.svg" alt="menu" style="height:25px;">
+                    </button>
+                    <div id="extendSidebarBtnContainerSm" onclick="extendSidebar()"></div>
+                }
+
+
+                <a class="navbar-brand ml-5" asp-area="" asp-page="/Index">PDD</a>
+
+
+                <div class="navbar ml-3" style="float:right">
+
+                    <!--
+    <div class="spinner-border  text-dark" id="upperSpinner" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+    -->
+                    <!--Notification-->
+                    @if (User.Identity.IsAuthenticated && User.IsInRole(Models.User.UserType.Admin))
+                    {
+                        <a asp-page="/Calendar/CalendarView">
+                            <div class="nav-item " style="display: inline-block; margin-right:2rem ">
+                                <img class="titleBarNotiIcon" src="~/img/black/calendar-week-fill.svg">
+                                <span class="calendarDot" id="navbarCalendarDot"></span>
+                            </div>
+                        </a>
+
+                        <a asp-page="/Notifications/NotificationsOverview">
+                            <div class="nav-item " style="display: inline-block; margin-right:2rem ">
+                                <img class="titleBarNotiIcon" src="~/img/black/bell-fill.svg">
+                                <span class="notiDot" id="navbarNotiDot"></span>
+                            </div>
+                        </a>
+                    }
+
+
+
+                    <!--User-->
+                    <div class="nav-item" style="margin-right: 2rem ; display: inline-block; ">
+                        <div class="dropdown dropleft ">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <a class="nav-link " style="padding:0" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <img class="titleBarUserAndMenuIcon" src="~/img/black/person-check-fill.svg">
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" asp-page="/Members/ViewMember"
+                                       asp-route-selectedMemberId="@User.FindFirst(x => x.Type == "LoggedId").Value">
+                                        Dane użytownika
+                                    </a>
+                                    <a class="dropdown-item" asp-page="/Account/Logout">Wyloguj</a>
+                                </div>
+                            }
+                            else
+                            {
+                                <a class="nav-link " style="padding:0" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <img class="titleBarUserAndMenuIcon" src="~/img/black/person-fill.svg">
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" asp-page="/Account/Login">Zaloguj</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                         <div id="readOnlyInfo">
+                            <svg onclick="closeReadOnlyInfo(this)" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                            </svg>
+                        </div>
+
+                        //var currentLoggedLastName = User.FindFirst(System.Security.Claims.ClaimTypes.GivenName);
+                        var currentLoggedLastName = User.FindFirst(x => x.Type == "LastName");
+
+                        <div id="navNameLastName" class="nav-item ">
+                            <p style="margin:0 2rem 0 0.3em; font-size:17px">
+                                @User.Identity.Name @currentLoggedLastName.Value
+                            </p>
+                        </div>
+                    }
+
+                    <!--Menu icon-->
+                    <div class="nav-item" style="display: inline-block; ">
+                        <div class="dropdown dropleft ">
+                            <a class="nav-link " style="padding:0" href="#" id="navbarDropdownMenuLink3"
+                               role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img class="titleBarUserAndMenuIcon" src="~/img/black/list.svg">
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item" asp-page="/Account/ViewUserData">O nas</a>
+                                <a class="dropdown-item" asp-page="/Account/Logout">Kontakt</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+        </nav>
+    </header>
+
+
+    @if (User.Identity.IsAuthenticated && User.IsInRole(Models.User.UserType.Admin))
+    {
+        <div id="menuBarContainer" class="hideOnPrint">
+            <table id="menuBarLeft" class="menuBarTablePartlyHidden " style="margin-top:4px">
+                <tr class="menuBarTableRow" id="menuBarTableRow1">
+                    <td class="menuBarTableColumn">
+                        <a style="display:inline-block " class="menuBarTableLink" asp-page="/Members/MembersOverview">
+                            <p class="float-right">Członkowie</p>
+                        </a>
+                    </td>
+
+                    <td class="menuBarTableColumn">
+                        <a class="menuBarTableLink" asp-page="/Members/MembersOverview">
+                            <img class="menuBarTableImg" src="~/img/white/people-fill.svg">
+                        </a>
+                    </td>
+                </tr>
+
+                <tr class="menuBarTableRow" id="menuBarTableRow2">
+                    <td class="menuBarTableColumn">
+                        <a style="display:inline-block " class="menuBarTableLink" asp-page="/Equipment/EquipmentOverview">
+                            <p class="float-right">Sprzęt</p>
+                        </a>
+                    </td>
+
+                    <td class="menuBarTableColumn">
+                        <a class="menuBarTableLink" asp-page="/Equipment/EquipmentOverview">
+                            <img class="menuBarTableImg" src="~/img/white/extinguisher-fill.svg">
+                        </a>
+                    </td>
+                </tr>
+
+                <tr class="menuBarTableRow" id="menuBarTableRow3">
+                    <td class="menuBarTableColumn">
+                        <a style="display:inline-block " class="menuBarTableLink" asp-page="/Actions/ActionOverview">
+                            <p class="float-right">Akcje</p>
+                        </a>
+                    </td>
+
+                    <td class="menuBarTableColumn">
+                        <a class="menuBarTableLink" asp-page="/Actions/ActionOverview">
+                            <img class="menuBarTableImg" src="~/img/white/cone-striped.svg">
+                        </a>
+                    </td>
+                </tr>
+
+                <tr class="menuBarTableRow" id="menuBarTableRow4">
+                    <td class="menuBarTableColumn">
+                        <a style="display:inline-block " class="menuBarTableLink" asp-page="/Calendar/CalendarView">
+                            <p class="float-right">Kalendarz</p>
+                        </a>
+                    </td>
+
+                    <td class="menuBarTableColumn">
+                        <a class="menuBarTableLink" asp-page="/Calendar/CalendarView">
+                            <img class="menuBarTableImg" src="~/img/white/calendar-week-fill.svg">
+                        </a>
+                    </td>
+                </tr>
+
+                <tr class="menuBarTableRow" id="menuBarTableRow5">
+                    <td class="menuBarTableColumn">
+                        <a style="display:inline-block " class="menuBarTableLink" asp-page="/Competition/CompetitionOverview">
+                            <p class="float-right">Zawody</p>
+                        </a>
+                    </td>
+
+                    <td class="menuBarTableColumn">
+                        <a class="menuBarTableLink" asp-page="/Competition/CompetitionOverview">
+                            <img class="menuBarTableImg" src="~/img/white/stopwatch-fill.svg">
+                        </a>
+                    </td>
+                </tr>
+
+                <tr class="menuBarTableRow" id="menuBarTableRow6">
+                    <td class="menuBarTableColumn">
+                        <a style="display:inline-block " class="menuBarTableLink" asp-page="/Reminders/RemindersOverview">
+                            <p class="float-right">Przypomnienia</p>
+                        </a>
+                    </td>
+
+                    <td class="menuBarTableColumn">
+                        <a class="menuBarTableLink" asp-page="/Reminders/RemindersOverview">
+                            <img class="menuBarTableImg" src="~/img/white/list-ul.svg">
+                        </a>
+                    </td>
+                </tr>
+
+                <tr class="menuBarTableRow" id="menuBarTableRow7">
+                    <td class="menuBarTableColumn">
+                        <a style="display:inline-block " class="menuBarTableLink" asp-page="/Statistics/StatisticsOverview">
+                            <p class="float-right">Statystyki</p>
+                        </a>
+                    </td>
+
+                    <td class="menuBarTableColumn">
+                        <a class="menuBarTableLink" asp-page="/Statistics/StatisticsOverview">
+                            <img class="menuBarTableImg" src="~/img/white/clipboard-data.svg">
+                        </a>
+                    </td>
+                </tr>
+
+                <tr class="menuBarTableRow" id="menuBarTableRow8">
+                    <td class="menuBarTableColumn">
+                        <a style="display:inline-block " class="menuBarTableLink" asp-page="/Documents/DocumentsOverview">
+                            <p class="float-right">Dokumenty</p>
+                        </a>
+                    </td>
+
+                    <td class="menuBarTableColumn">
+                        <a class="menuBarTableLink" asp-page="/Documents/DocumentsOverview">
+                            <img class="menuBarTableImg" src="~/img/white/file-earmark-pdf-fill.svg">
+                        </a>
+                    </td>
+                </tr>
+
+                <tr class="menuBarTableRow" id="menuBarTableRow9">
+                    <td class="menuBarTableColumn">
+                        <a style="display:inline-block " class="menuBarTableLink" asp-page="/QRCode/QRCodeGenerate">
+                            <p class="float-right">Kody QR</p>
+                        </a>
+                    </td>
+
+                    <td class="menuBarTableColumn">
+                        <a class="menuBarTableLink" asp-page="/QRCode/QRCodeGenerate">
+                            <img class="menuBarTableImg" src="~/img/white/qr-code-scan.svg">
+                        </a>
+                    </td>
+                </tr>
+
+
+                <tr class="menuBarTableRow" id="menuBarTableRow10">
+                    <td class="menuBarTableColumn">
+                        <a style="display:inline-block " class="menuBarTableLink" asp-page="/Notifications/NotificationsOverview">
+                            <p class="float-right">Powiadomienia</p>
+                        </a>
+                    </td>
+
+                    <td class="menuBarTableColumn">
+                        <a class="menuBarTableLink" asp-page="/Notifications/NotificationsOverview">
+                            <img class="menuBarTableImg" src="~/img/white/bell-fill.svg">
+                        </a>
+                    </td>
+                </tr>
+
+                <tr class="menuBarTableRow" id="menuBarTableRow11">
+                    <td class="menuBarTableColumn">
+                        <a style="display:inline-block " class="menuBarTableLink" asp-page="/Finances/FinancesOverview">
+                            <p class="float-right">Finanse</p>
+                        </a>
+                    </td>
+
+                    <td class="menuBarTableColumn">
+                        <a class="menuBarTableLink" asp-page="/Finances/FinancesOverview">
+                            <img class="menuBarTableImg" src="~/img/white/currency-dollar.svg">
+                        </a>
+                    </td>
+                </tr>
+
+                <tr class="menuBarTableRow" id="menuBarTableRow12">
+                    <td class="menuBarTableColumn">
+                        <a style="display:inline-block " class="menuBarTableLink" asp-page="/Chat/ChatView">
+                            <p class="float-right">Chat</p>
+                        </a>
+                    </td>
+
+                    <td class="menuBarTableColumn">
+                        <a class="menuBarTableLink" asp-page="/Chat/ChatView">
+                            <img class="menuBarTableImg" src="~/img/white/chat-dots-fill.svg">
+                        </a>
+                    </td>
+                </tr>
+
+                <tr class="menuBarTableRow" id="menuBarTableRow13">
+                    <td class="menuBarTableColumn">
+                        <a style="display:inline-block " class="menuBarTableLink" asp-page="/Announcement/AnnouncementsOverview">
+                            <p class="float-right">Ogłoszenia</p>
+                        </a>
+                    </td>
+
+                    <td class="menuBarTableColumn">
+                        <a class="menuBarTableLink" asp-page="/Announcement/AnnouncementsOverview">
+                            <img class="menuBarTableImg" src="~/img/white/broadcast.svg">
+                        </a>
+                    </td>
+                </tr>
+
+
+                <tr class="menuBarTableRow" id="menuBarTableRow14">
+                    <td class="menuBarTableColumn">
+                        <a style="display:inline-block " class="menuBarTableLink" asp-page="/Settings/SettingsOverview">
+                            <p class="float-right">Ustawienia</p>
+                        </a>
+                    </td>
+
+                    <td class="menuBarTableColumn">
+                        <a class="menuBarTableLink" asp-page="/Settings/SettingsOverview">
+                            <img class="menuBarTableImg" src="~/img/white/gear-wide-connected.svg">
+                        </a>
+                    </td>
+                </tr>
+
+
+
+            </table>
+        </div>
+
+    }
+
+
+
+    <div id="upperSpinner" style="width:100% ;height:100%; background-color:rgba(0,0,0,0.3);
+        z-index:5;position:absolute;left:0;top:0 ">
+        <div class="centerHorizontal" id="calendarSpinner" style="margin-top: 40vh; display: block; position: fixed ">
+            <div class="spinner-border text-light" role="status" style="height:10rem;width:10rem">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+
+
+
+
+
+
+
+    <!--
+
+    <footer class="border-top footer text-muted hideOnPrint">
+        <div class="container">
+            &copy; 2021 - PDD - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    -->
+
+    <script src="~/lib/signalR/signalr.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/select2/select2.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/instascan/instascan.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+
+
+
+
+</body>
+
+</html>

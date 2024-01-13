@@ -1,0 +1,239 @@
+﻿@page
+@model PracaDyplomowa.Pages.Competition.CompetitionOverviewModel
+@{
+}
+
+@using PracaDyplomowa.Models
+
+<!--for js communication-->
+<input class="backendALert" type="hidden" runat="server" value="@Model.passAlert">
+
+
+
+
+
+<body onload="onloadCompetition()">
+
+
+    <div class="upperMenuBar">
+        <div class="dropdown">
+            <button class="btn btn-light btn-sm dropdown-toggle dropdownMenuMenuBar" type="button"
+                    data-toggle="dropdown" aria-expanded="false">
+            </button>
+            <div class="dropdown-menu shadow p-3" aria-labelledby="dropdownMenuButton"
+                 style="background-color: #f0f2f5; border: solid thin #d0d2d5 ">
+                <form method="post">
+                    <p class=" bg-dark text-white p-1" style="border-radius:4px">Filtruj:</p>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="CompetitionCustomRadioFilter1" name="CompetitionCustomRadioFilter"
+                               class="custom-control-input" value="miejsce1">
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="CompetitionCustomRadioFilter1">1 miejsce</label>
+                    </div>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="CompetitionCustomRadioFilter2" name="CompetitionCustomRadioFilter"
+                               class="custom-control-input" value="miejsce2">
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="CompetitionCustomRadioFilter2">2 miejsce</label>
+                    </div>
+
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="CompetitionCustomRadioFilter3" name="CompetitionCustomRadioFilter"
+                               class="custom-control-input" value="miejsce3">
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="CompetitionCustomRadioFilter3">3 miejsce</label>
+                    </div>
+
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="CompetitionCustomRadioFilter4" name="CompetitionCustomRadioFilter"
+                               class="custom-control-input" value="all" checked>
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="CompetitionCustomRadioFilter4">Wszystkie</label>
+                    </div>
+
+
+                    <p class="bg-dark text-white p-1 " style="border-radius:4px">Sortuj:</p>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="CompetitionCustomRadioSort1" name="CompetitionCustomRadioSort" value="ZajeteMiejsce"
+                               class="custom-control-input">
+                        <label class="custom-control-label" for="CompetitionCustomRadioSort1">Zajęte miejsce</label>
+                    </div>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="CompetitionCustomRadioSort2" name="CompetitionCustomRadioSort" value="Data"
+                               class="custom-control-input" checked>
+                        <label class="custom-control-label" for="CompetitionCustomRadioSort2">Data</label>
+                    </div>
+
+
+                    <input type="submit" style="width:100%" class="btn btn-dark" value="Zapisz"
+                           asp-page-handler="SaveDisplayOptions" />
+                </form>
+            </div>
+        </div>
+
+
+        <a class="btn btn-secondary btn-sm ml-3" style="color:white" title="Dodaj" asp-page="/Competition/AddCompetition">
+            Dodaj
+        </a>
+
+    </div>
+
+
+    <div class="innerContainer" style=" overflow-x: auto;">
+
+        @{
+            if (Model.ListOfCompetitions.Count == 0)
+            {
+                <div class="row  justify-content-center mt-4" style="width:100%">
+                    <h3> BRAK POZYCJI DO WSYWIETLENIA </h3>
+                </div>
+
+                return;
+            }
+        }
+
+        <div style="display:grid">
+
+
+            @{
+                try
+                {
+                    DateTime competitionDate = Convert.ToDateTime(Model.ListOfCompetitions[0].Data);
+                    int year = competitionDate.Year;
+                    int yearTemp = year;
+                    int count = 0;
+                    while (Model.ListOfCompetitions.Count > count)
+                    {
+                        <div>
+                            @{
+                                while (year == yearTemp && Model.ListOfCompetitions.Count > count)
+                                {
+                                    competitionDate = Convert.ToDateTime(Model.ListOfCompetitions[count].Data);
+                                    string competitionDateStr = competitionDate.ToString("yyyy-MM-dd");
+                                    <a asp-route-selectedCompetitionId="@Model.ListOfCompetitions[count].Id"
+                                       asp-page="/Competition/ViewCompetition">
+                                        <div class="competitionField">
+                                            <div style="display:grid">
+                                                <div style="font-size:1.2em ;text-align:center">
+                                                    @CustomStr.Adjust(Model.ListOfCompetitions[count].Kategoria,12)
+                                                </div>
+
+
+
+
+                                                <div style="text-align:center" class="mt-2">
+                                                    @{
+                                                        if (Model.ListOfCompetitions[count].ZajeteMiejsce == "1")
+                                                        {
+                                                            <div class="imgContainer">
+                                                                <img style="height: 110px;" src="~/img/trophy/silver-s.svg">
+                                                                <div class="centeredImgText">
+                                                                    @CustomStr.Adjust(Model.ListOfCompetitions[count].ZajeteMiejsce, 2)
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        else if (Model.ListOfCompetitions[count].ZajeteMiejsce == "2")
+                                                        {
+                                                            <div class="imgContainer">
+                                                                <img style="height: 110px;" src="~/img/trophy/silver-s.svg">
+                                                                <div class="centeredImgText">
+                                                                    @CustomStr.Adjust(Model.ListOfCompetitions[count].ZajeteMiejsce, 2)
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        else if (Model.ListOfCompetitions[count].ZajeteMiejsce == "3")
+                                                        {
+                                                            <div class="imgContainer">
+                                                                <img style="height: 110px;" src="~/img/trophy/silver-s.svg">
+                                                                <div class="centeredImgText">
+                                                                    @CustomStr.Adjust(Model.ListOfCompetitions[count].ZajeteMiejsce, 2)
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="imgContainer" >
+                                                              <img style="height: 110px;" src="~/img/trophy/empty.svg">
+                                                                <div class="centeredImgText4AndUp">
+                                                                    @CustomStr.Adjust(Model.ListOfCompetitions[count].ZajeteMiejsce, 3)
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                </div>
+                                                <div class="ml-1" style="text-align:left;font-size:0.75em">
+                                                    @("Data: " + competitionDateStr)
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </a>
+                                    if(count++ < Model.ListOfCompetitions.Count-1)
+                                        yearTemp = Convert.ToDateTime(Model.ListOfCompetitions[count].Data).Year;
+
+                                }
+                            }
+                        </div>
+
+                        <div>
+                            <span class="ml-3" style="font-weight:600;font-size:1.1em">@year</span>
+                            <hr style="border-color: #999 !important ;margin: 0 13px 20px 13px" />
+                        </div>
+                        year = yearTemp;
+
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+
+            }
+
+
+
+
+
+        </div>
+
+        <!--
+        <div style="display:grid">
+            <div>
+                <div class="docsField">
+                </div>
+
+                <div class="docsField">
+                </div>
+
+                <div class="docsField">
+                </div>
+
+                <div class="docsField">
+                </div>
+
+                <div class="docsField">
+                </div>
+
+                <div class="docsField">
+                </div>
+            </div>
+
+
+            <div>
+                <p class="ml-2">2021</p>
+                <hr />
+            </div>
+
+
+            <div style="">
+                <div class="docsField">
+                </div>
+            </div>
+
+        </div>
+            -->
+
+    </div>
+</body>

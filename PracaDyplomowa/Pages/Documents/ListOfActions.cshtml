@@ -1,0 +1,127 @@
+﻿@page
+@model PracaDyplomowa.Pages.Documents.ListOfActionsModel
+@{
+}
+
+@using PracaDyplomowa.Models
+
+
+<ul class="nav nav-tabs mainNavTabs" >
+    <li class="nav-item ">
+        <a class="nav-link navItemMembers active" id=""
+           asp-page="/Documents/ListOfActions">Generuj listę akcji</a>
+    </li>
+    <li class="nav-item ">
+        <a class="nav-link navItemMembers " id=""
+           asp-page="/Documents/ListOfTransactions">Generuj listę transakcji</a>
+    </li>
+</ul>
+
+
+<div class="innerContainer2">
+
+    <form method="post" id="editMemberForm" class="displaySpinner" >
+    
+        <div id="memberEditWindow" class="m-3">
+            <div class="form-row justify-content-center" style="margin-top: 40px; width:100% ">
+
+                <div class="row formPanelContainer  justify-content-center">
+
+                    <!--FIRST COLUMN-->
+                    <div class=" fitstFrom2Column">
+                        <div class="fitstFrom2ColumnBtns">
+                            <img class="" style="width: 100%; border-radius:6px" src="~/img/black/file-earmark-pdf-fill.svg"
+                                    onerror="this.src='/img/gray/person-fill.svg'">
+
+                            <div class="input-group justify-content-center mt-1">
+                                <a  class="btn btn-light btn-sm m-1" href="javascript:void('')"
+                                    onclick="printActionListBtnClick()"> Drukuj </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--SECOND COLUMN-->
+                    <div class="secondFrom2Column">
+
+                        <!--ALTERNATIVE 4 FIRST COLUMN-->
+                        <div class="alternativeElement">
+                            <input type="submit" class="btn btn-light btn-sm mr-2" value="Drukuj"
+                                   asp-page-handler="UpdateUserData" />
+                           
+                        </div>
+                        <!--ALTERNATIVE-->
+
+                         <div class="form-group mb-0 form-inline" style="margin-top:-12px">
+                            <label for="userDataImieE" class="mb-1 labelInline">Tytuł</label>
+                            <input type="text" class="inputInline form-control customFormInputv2 "
+                                   id="printActionsListTitle" >
+                        </div>
+
+                        <div class="form-group mb-0 form-inline" style="margin-top:-12px">
+                            <label for="userDataImieE" class="mb-1 labelInline">Akcje od</label>
+                            <input type="date" class="inputInline form-control customFormInputv2 "
+                                   id="printActionsListDateFrom" >
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataNazwiskoE" class="mb-1 labelInline">Akcje do</label>
+                            <input type="date" class="form-control customFormInputv2 inputInline"
+                                   id="printActionsListDateTo">
+                        </div>
+
+                       
+
+                        <div class="form-group  form-inline justify-content-center" >
+                                   <label for="addListOfActionUserTable" class="mb-1 mt-3" style="font-weight: 600; font-size:1.1em;cursor:pointer" 
+                                    data-toggle="collapse" data-target="#addCompetitionUserTableContainer" aria-expanded="false" aria-controls="addCompetitionUserTableContainer">
+                                    ⌄ Generuj listę według uczestnika </label>
+                                <div class=" collapse show" id="addCompetitionUserTableContainer"  style=" width: 100%;">
+                                 @if(Model.ListOfUsers.Count == 0)
+                                    {
+                                        <p style="text-align:center;font-size:1.2em;color:#999">BRAK  </p>
+                                    }
+                                    <table class="tableDefaultSm " id="addUserForActionListTable">
+                                        <thead></thead>
+                                        @{
+                                            for (int i = 0; i < Model.ListOfUsers.Count; i++)
+                                            {
+                                                if (@Model.ListOfUsers[i].Zatwierdzony == "n")
+                                                {
+                                                    continue;
+                                                }
+                                                <tbody>
+                                                    <tr class="" style=" cursor: pointer" onclick="addMemberListOfActionClick(this)">
+
+                                                        <td data-label="" style="width:0">
+                                                            <input type="checkbox" class="ActionCheckBox" style="display:none" onclick="return false;" />
+                                                        </td>
+
+                                                        <td style="display:none">
+                                                            <input type="hidden" value="@Model.ListOfUsers[i].UzytkownikId" readonly />
+                                                        </td>
+
+                                                        <td style="display:none">
+                                                            <input type="hidden" value="@Model.ListOfUsers[i].Jednostka_id" readonly />
+                                                        </td>
+
+                                                        <td data-label="">
+                                                                <div>
+                                                                    @(CustomStr.Adjust(Model.ListOfUsers[i].Imie)+" ")
+                                                                    @CustomStr.Adjust(Model.ListOfUsers[i].Nazwisko)
+                                                                </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            }
+                                        }
+                                    </table>
+                                    </div>
+                                </div>
+
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

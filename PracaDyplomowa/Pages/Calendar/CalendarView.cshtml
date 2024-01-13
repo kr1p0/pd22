@@ -1,0 +1,215 @@
+﻿@page
+@model PracaDyplomowa.Pages.Calendar.CalendarViewModel
+@{
+}
+@using PracaDyplomowa.Models
+
+<!-- For Ajax-->
+@Html.AntiForgeryToken()
+
+<input class="backendALert" name="passAlert" type="hidden" value="@Model.passAlert">
+
+
+
+
+
+
+<style>
+    .calendarDataInputView {
+        width: 40px;
+        margin-right: 10px;
+        padding: 0;
+        border: 0;
+        background-color: transparent;
+    }
+
+    .calendarTimeInputView {
+        border: 0;
+        background-color: transparent
+    }
+</style>
+
+<body onload="calendarOnload()">
+    <div class="innerContainer3">
+
+        <div id="aboveCalendarWindow">
+
+            <ul class="nav nav-tabs calendarNavTabs" style="padding:0 0 0 20px; border:0; background-color:#343a40">
+                <li class="nav-item ">
+                    <a class="nav-link active" id="viewReminderTab" onclick="calendarTabs(this)" href="javascript:;">
+                        Przegladaj
+                    </a>
+                </li>
+                @if (User.Identity.IsAuthenticated && User.IsInRole(Models.User.UserType.Admin))
+                {
+                    <li class="nav-item ">
+                        <a class="nav-link " id="addReminderTab" onclick="calendarTabs(this)" href="javascript:;">
+                            Dodaj
+                        </a>
+                    </li>
+                }
+               
+                <li class="nav-item aboveCalendarCloseBtn"   >
+                    <input type="button" class="closeBtnUpperLeft" value="×"
+                           onclick="closeOverCalendarWindow()" />
+                </li>
+            </ul>
+            <!--🗙-->
+            <div id="aboveCalendarInnerWindow">
+
+                <form method="post" id="addReminderWindow" class="displaySpinner">
+                    <label for="calendarDataInput" class="">Data</label>
+                    <input type="date" class="form-control bg-cs" id="calendarDateInput"
+                           asp-for="CalendarEvent.DataRozpoczecia" required style=" width: 65%;">
+
+                    <label for="calendarTimeInput" class="">Czas</label>
+                    <input type="time" class="form-control bg-cs" id="calendarTimeInput"
+                           asp-for="CalendarEvent.CzasRozpoczecia" required style=" width: 65%; ">
+
+                    <div class="input-group mt-3">
+                        <div class="input-group" style="width:120px; ">
+                            <label for="selectCalendarFieldColor" class="">Tło &nbsppola&nbsp</label>
+                            <input type="color" value="#4d7b8c" class=" colorInpCalen"
+                                   id="selectCalendarFieldColor" asp-for="CalendarEvent.TloHex">
+                        </div>
+
+                        <div class="input-group" style="width: 120px; ">
+                            <label for="selectCalendarFontColor" class="">Czcionka&nbsp</label>
+                            <input type="color" value="#ffffff" class="colorInpCalen"
+                                   id="selectCalendarFontColor" asp-for="CalendarEvent.CzcionkaHex">
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-3 mt-3 customInputGroup" >
+                        <div class="input-group-prepend">
+                            <div class="input-group-text bg-dark">
+                                <input type="checkbox" id="notificationEmail"
+                                       onclick="userListForNewReminderVisibility()" asp-for="PowiadomienieEmail">
+                            </div>
+                        </div>
+                        <input type="text" class="form-control  bg-cs" value="Powiadomienie e-mail" readonly>
+                    </div>
+
+                    <div class="input-group mb-3 customInputGroup" >
+                        <div class="input-group-prepend">
+                            <div class="input-group-text  bg-dark">
+                                <input type="checkbox" id="notificationPhone"
+                                       onclick="userListForNewReminderVisibility()" asp-for="PowiadomienieTelefon">
+                            </div>
+                        </div>
+                        <input type="text" class="form-control bg-cs" value="Powiadomienie web push" readonly>
+                    </div>
+
+                    <label for="reminderTitleInput" class="">Tytuł</label>
+                    <input type="text" class="form-control bg-cs" id="reminderTitleInput"
+                           asp-for="CalendarEvent.Tytul" required>
+
+                    <label for="reminderContenstsInput" class=" ">Treść</label>
+                    <textarea class="form-control bg-cs " id="reminderContentInput" rows="3"
+                              asp-for="CalendarEvent.Tresc" oninput="auto_grow(this)"></textarea>
+
+
+                    <div id="hiddenNewReminderListOfUser">
+                        <label for="addUserTableForReminderContainer" class="">Adresaci</label>
+                        <div id="addUserTableForReminderContainer">
+                            <table class="tableDefaultSm  " id="addUserTableForReminder">
+                                <thead></thead>
+                                @{
+                                    for (int i = 0; i < Model.ListOfUsers.Count; i++)
+                                    {
+                                        if (@Model.ListOfUsers[i].Zatwierdzony == "n")
+                                        {
+                                            continue;
+                                        }
+                                        <tbody>
+                                            <tr class="" style=" cursor: pointer" onclick="updateTableCheckBox(this,'addUserTableForReminder')">
+                                                <td data-label="Dodaj" style="width:0">
+                                                    <input type="checkbox" id="addReminderCheckBox" style="display:none" onclick="return false;" />
+                                                </td>
+                                                <td style="display:none;">
+                                                    <input type="hidden" value="@Model.ListOfUsers[i].UzytkownikId" />
+                                                </td>
+                                                <td style="display:none;">
+                                                    <input type="hidden" value="@Model.ListOfUsers[i].Jednostka_id" />
+                                                </td>
+                                                <td> 
+                                                     @(CustomStr.Adjust(Model.ListOfUsers[i].Imie)+" ")
+                                                     @CustomStr.Adjust(Model.ListOfUsers[i].Nazwisko)
+                                                </td>
+                                           
+                                            </tr>
+                                        </tbody>
+                                    }
+                                }
+                            </table>
+                        </div>
+                    </div>
+
+
+
+                    <input class="saveBtnCalendarPage btn btn-dark float-lg-right mt-2" type="submit"
+                           value="Zapisz" />
+
+                </form>
+
+
+                <div id="viewCalendarReminderWindow">
+                    <!--
+            <div class="input-group mb-0">
+                <img class="mr-1" src="~/img/white/calendar-week.svg">
+                <input type="text" class="form-control bg-transparent text-white calendarDataInputView"
+                        readonly>
+
+                <img src="~/img/white/clock.svg">
+                <input type="time" class="form-control bg-transparent text-white calendarTimeInputView"
+                        readonly>
+            </div>
+
+            <label for="reminderTitleInput" class="mb-0 text-white">Tytuł</label>
+            <input type="text" class="form-control bg-secondary text-white reminderTitleInputView"
+                   readonly>
+
+            <label for="reminderContenstsInput" class="mb-0 text-white ">Treść</label>
+            <textarea class="form-control bg-secondary reminderContenstsInputView"
+                      readonly oninput="auto_grow(this)"></textarea>
+
+            <input class="editBtnCalendarPage btn btn-secondary float-lg-right  " type="button" value="Edytuj" />
+            <input class="editBtnCalendarPage btn btn-secondary float-lg-right " type="button" value="Usuń" />
+             -->
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+
+
+        <div id="calendarFrame" class="d-inline-flex">
+
+            <div>
+                <div id="monthYearBtnContainer">
+                    <div style="white-space:nowrap; display:inline">
+                        <button class="btn " id="subtractMonthBtn" onclick="chooseMonth(this)"> ❮ </button>
+                        <input class="" type="text" id="selectedMonth" />
+                        <button class="btn " id="addMonthBtn" onclick="chooseMonth(this)"> ❯ </button>
+                    </div>
+                    <div style="white-space: nowrap; display: inline">
+                        <button class="btn " id="subtractYearBtn" onclick="chooseYear(this)"> ❮ </button>
+                        <input type="text" id="selectedYear" />
+                        <button class="btn " id="addYearBtn" onclick="chooseYear(this)"> ❯  </button>
+                    </div>
+                </div>
+
+                <div id="calendar"></div>
+            </div>
+            <div class="centerHorizontal" id="calendarWait">
+                <div class="spinner-grow" style="width: 7rem; height: 7rem;" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>

@@ -1,0 +1,83 @@
+﻿@page
+@model PracaDyplomowa.Pages.Documents.TransactionsPrintPreviewModel
+@using PracaDyplomowa.Models
+
+<body onload="onloadTransactionsPrintPreview()">
+   <div class="hideOnPrint" style="width:100%;height:100%;background-color:#fafafa;position:absolute;left:0;top:0;z-index:3"></div>
+
+    <div class="docPrintContainer" style="z-index:1">
+        <p style="font-weight:700;font-size:56px">@Model.Title</p>
+        <br />
+        @for (int i = 0; i < Model.ListOfFinances.Count; i++)
+        {
+            <table id="" class="printDoctableDefault">
+                <thead> </thead>
+                <tbody>
+                    <tr class="m-1">
+                        <td style="text-align:left;width:400px">
+                            <span style="font-weight:700">Nazwa dokumentu</span>
+                        </td>
+                        <td style="text-align:left">
+                            <span>@CustomStr.Adjust(Model.ListOfFinances[i].Dokument,100)</span>
+                        </td>
+                    </tr>
+
+                    <tr class="m-1">
+                        <td style="text-align:left;width:400px">
+                            <span style="font-weight:700">Odbiorca</span>
+                        </td>
+                        <td style="text-align:left">
+                            <span>@CustomStr.Adjust(Model.ListOfFinances[i].Odbiorca,100)</span>
+                        </td>
+                    </tr>
+
+                     <tr class="m-1">
+                        <td style="text-align:left;width:400px">
+                            <span style="font-weight:700">Źódło</span>
+                        </td>
+                        <td style="text-align:left">
+                            <span>@CustomStr.Adjust(Model.ListOfFinances[i].Zrodlo,100)</span>
+                        </td>
+                    </tr>
+
+                    <tr class="m-1">
+                        <td style="text-align:left;width:400px">
+                            <span style="font-weight:700">Typ transakcji</span>
+                        </td>
+                        <td style="text-align:left">
+                            <span>@Model.ListOfFinances[i].TypTransakcji</span>
+                        </td>
+                    </tr>
+
+                    <tr class="m-1">
+                        <td style="text-align:left;width:400px">
+                            <span style="font-weight:700">Kwota</span>
+                        </td>
+                        <td style="text-align:left">
+                            <span>@(Model.ListOfFinances[i].Kwota+" zł")</span>
+                        </td>
+                    </tr>
+
+                    <tr class="m-1">
+                        <td style="text-align:left;width:400px">
+                            <span style="font-weight:700">Data</span>
+                        </td>
+                        <td style="text-align:left">
+                            <span>@CustomStr.Adjust(Model.ListOfFinances[i].DataTransakcji,100)</span>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+             <br />
+            <hr />
+            <br />
+        }
+    </div>
+</body>
+<script>
+    window.addEventListener('afterprint', (event) => {
+        sessionStorage.clear();
+        window.close();
+    });
+</script>

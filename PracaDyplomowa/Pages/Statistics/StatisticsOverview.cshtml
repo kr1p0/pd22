@@ -1,0 +1,157 @@
+﻿@page
+@model PracaDyplomowa.Pages.Statistics.StatisticsOverviewModel
+@{
+}
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<body onload="onloadStatistics()">
+
+    <div class="upperMenuBar">
+        <div class="dropdown" style="max-height:400px;">
+            <button class="btn btn-light btn-sm dropdown-toggle dropdownMenuMenuBar" type="button"
+                    data-toggle="dropdown" aria-expanded="false">
+            </button>
+            <div class="dropdown-menu statisticsDrop shadow p-3" aria-labelledby="dropdownMenuButton"
+                 style="background-color: #f0f2f5; border: solid thin #d0d2d5 ">
+                <form>
+                    <p class=" bg-dark text-white p-1" style="border-radius:4px">Zakres danych wykresu:</p>
+                    <div class="bg-cs4 text-white p-1 mb-1" style="border-radius: 4px; font-size: 0.8em">Zawody:</div>
+                    <div class="custom-control custom-radio mb-2">
+                        <input type="radio" id="StatisticsCustomRadio1" name="StatisticsCustomRadio"
+                               class="custom-control-input">
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="StatisticsCustomRadio1">Zajęte miejsca</label>
+                    </div>
+
+                    <div class="bg-cs4 text-white p-1 mb-1" style="border-radius: 4px; font-size: 0.8em">Akcje:</div>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="StatisticsCustomRadio2" name="StatisticsCustomRadio"
+                               class="custom-control-input">
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="StatisticsCustomRadio2">Suma w danym okresie <span style="border: solid thin #555; border-radius: 6px ; padding: 1px 3px; font-size:0.75em">Miesiące</span></label>
+                    </div>
+                    <div class="custom-control custom-radio mb-2">
+                        <input type="radio" id="StatisticsCustomRadio2.5" name="StatisticsCustomRadio"
+                               class="custom-control-input">
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="StatisticsCustomRadio2.5">Suma w danym okresie <span style="border: solid thin #555; border-radius: 6px ; padding: 1px 3px; font-size:0.75em">Lata</span></label>
+                    </div>
+
+                    <div class="bg-cs4 text-white p-1 mb-1" style="border-radius: 4px; font-size: 0.8em">Członkowie:</div>
+                    <div class="custom-control custom-radio mb-2">
+                        <input type="radio" id="StatisticsCustomRadio3" name="StatisticsCustomRadio"
+                               class="custom-control-input" checked>
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="StatisticsCustomRadio3">Uczestnictwo w akcjach</label>
+                    </div>
+                    <div class="bg-cs4 text-white p-1 mb-1" style="border-radius: 4px; font-size: 0.8em">Członkowie:</div>
+                    <div class="custom-control custom-radio  mb-2">
+                        <input type="radio" id="StatisticsCustomRadio4" name="StatisticsCustomRadio"
+                               class="custom-control-input">
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="StatisticsCustomRadio4">Czas w akcjach</label>
+                    </div>
+                    <div class="bg-cs4 text-white p-1 mb-1" style="border-radius: 4px; font-size: 0.8em">Finanse:</div>
+
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="StatisticsCustomRadio5" name="StatisticsCustomRadio"
+                               class="custom-control-input">
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="StatisticsCustomRadio5">Wpływy <span style="border: solid thin #555; border-radius: 6px ; padding: 1px 3px; font-size:0.75em">Miesiące</span></label>
+                    </div>
+                    <div class="custom-control custom-radio mb-2">
+                        <input type="radio" id="StatisticsCustomRadio5.5" name="StatisticsCustomRadio"
+                               class="custom-control-input">
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="StatisticsCustomRadio5.5">Wpływy <span style="border: solid thin #555; border-radius: 6px ; padding: 1px 3px; font-size:0.75em">Lata</span></label>
+                    </div>
+
+                    <div class="bg-cs4 text-white p-1 mb-1" style="border-radius: 4px; font-size: 0.8em">Finanse:</div>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="radio" id="StatisticsCustomRadio6" name="StatisticsCustomRadio"
+                               class="custom-control-input">
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="StatisticsCustomRadio6">Stan konta <span style="border: solid thin #555; border-radius: 6px ; padding: 1px 3px; font-size:0.75em">Miesiące</span></label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="StatisticsCustomRadio7" name="StatisticsCustomRadio"
+                               class="custom-control-input">
+                        <label class="custom-control-label" style="white-space:nowrap"
+                               for="StatisticsCustomRadio7">Stan konta <span style="border: solid thin #555; border-radius: 6px ; padding: 1px 3px; font-size:0.75em">Lata</span></label>
+                    </div>
+
+
+                    <p class="bg-dark text-white p-1 mt-3" style="border-radius:4px"> Typ wykresu:</p>
+                    <div class="custom-control custom-radio ">
+                        <input type="checkbox" id="StatisticsCustomcheckbox1"
+                               class="custom-control-input" checked>
+                        <label class="custom-control-label" for="StatisticsCustomcheckbox1" style="white-space:nowrap">
+                            Wykres słupkowy
+                        </label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="checkbox" id="StatisticsCustomcheckbox2"
+                               class="custom-control-input">
+                        <label class="custom-control-label" for="StatisticsCustomcheckbox2" style="white-space:nowrap">
+                            Wykres kołowy
+                        </label>
+                    </div>
+                    <div class="custom-control custom-radio mb-1">
+                        <input type="checkbox" id="StatisticsCustomcheckbox3"
+                               class="custom-control-input">
+                        <label class="custom-control-label" for="StatisticsCustomcheckbox3" style="white-space:nowrap">
+                            Wykres warstwowy
+                        </label>
+                    </div>
+
+                    <p class="bg-dark text-white p-1 mt-3" style="border-radius:4px">Data początkowa</p>
+                    <input type="date" class="btn bg-white  " style="color:black"
+                           id="MinStatisticsDateInput" />
+                    <a href="javascript:;" onclick="clearStatisticsDropDownDate('MinStatisticsDateInput')" style="font-size:0.8em;">
+                        &nbsp Wyczyśc datę
+                    </a>
+
+                    <p class="bg-dark text-white p-1 mt-3" style="border-radius:4px">Data końcowa</p>
+                    <input type="date" class="btn bg-white  " style="color:black"
+                           id="MaxStatisticsDateInput" />
+                    <a href="javascript:;" onclick="clearStatisticsDropDownDate('MaxStatisticsDateInput')" style="font-size:0.8em;">
+                       &nbsp Wyczyśc datę
+                    </a>
+
+                    <hr />
+                    <div class="custom-control custom-radio mb-2">
+                        <input type="checkbox" id="StatisticsCustomcheckboxDataRange"
+                               class="custom-control-input">
+                        <label class="custom-control-label" for="StatisticsCustomcheckboxDataRange" style="">
+                            Uwzględnij jedynie daty gdzie zaszły zmiany
+                        </label>
+                    </div>
+
+                    <input type="button" style="width:100%" class="btn btn-dark mt-3" value="Zapisz"
+                           onclick="selectedStatisticsToDisplay()" />
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--
+        <div class="innerContainer text-center">
+            <p style="font-size:1.1em ;font-weight:500" id="displayChartDate"></p>
+            <div id="innerChartContainer" class="row justify-content-center">
+                <div id="displayChart" class="defaultClass"></div>
+                <div id="displayChart2" class="defaultClass" style="display:none"></div>
+            </div>
+        </div>
+    -->
+
+    <div class="innerContainer text-center">
+        <p style="font-size:1.1em ;font-weight:500;" class="p-2" id="displayChartDate"></p>
+        <div id="innerChartContainer" class="row justify-content-center">
+            <div id="displayChart" class="defaultClass col-lg-12 " style="display:none"></div>
+            <div id="displayChart2" class="defaultClass col-lg-12 " style="display:none"></div>
+            <div id="displayChart3" class="defaultClass col-lg-12 " style="display:none"></div>
+        </div>
+    </div>
+
+</body>

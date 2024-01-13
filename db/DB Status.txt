@@ -1,0 +1,8 @@
+select sid,
+      serial#,
+      status,
+      osuser,
+      machine,
+      program,
+      module
+from v$session

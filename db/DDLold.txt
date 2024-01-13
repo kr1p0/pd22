@@ -1,0 +1,73 @@
+drop table "OSP_JEDNOSTKA" cascade constraints PURGE;
+drop table "OSP_UZYTKOWNIK" cascade constraints PURGE;
+drop table "OSP_TEMPHASH" cascade constraints PURGE;
+drop table "OSP_SPRZET" cascade constraints PURGE;
+drop table "OSP_KALENDARZ" cascade constraints PURGE;
+
+CREATE TABLE osp_jednostka
+(
+jednostka_id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+nazwa_jednostki varchar (50) NOT NULL,
+PRIMARY KEY (jednostka_id)
+);
+
+
+
+CREATE TABLE osp_uzytkownik
+(
+uzytkownik_id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+jednostka_id int NOT NULL,
+typ_konta varchar(15) NOT NULL,
+imie varchar(25) NOT NULL,
+nazwisko varchar (30) NOT NULL,
+email varchar (70) NOT NULL,
+haslo varchar (70) NOT NULL,
+sol varchar (50) NOT NULL,
+telefon varchar (15)NULL,
+funkcja varchar(25)NULL,
+data_wstapienia DATE ,
+zatwierdzony char(1) NOT NULL,
+PRIMARY KEY (uzytkownik_id)
+);
+
+
+CREATE TABLE osp_tempHash (
+    id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+    uzytkownik_id int NOT NULL,
+    hash_string VARCHAR2(140) NOT NULL,
+    data_utworzenia TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE osp_sprzet (
+    id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+    jednostka_id int NOT NULL,
+    nazwa VARCHAR2(50) NOT NULL
+);
+
+CREATE TABLE osp_kalendarz (
+    id int  GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+    jednostka_id int NOT NULL,
+    tytul VARCHAR2(60),
+    tresc VARCHAR2(200),
+    data_rozpoczecia DATE,
+    czas_rozpoczecia TIMESTAMP,
+    powiadomienie_email char(1) NOT NULL,
+    powiadomienie_telefon char(1) NOT NULL,
+    tlo_kolor_hex VARCHAR2(10),
+    czcionka_kolor_hex VARCHAR2(10)
+);
+
+
+
+alter table osp_uzytkownik
+add constraint nazwa_jednostki_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+
+alter table osp_tempHash
+add constraint osp_tempHash_fk foreign key (uzytkownik_id) references osp_uzytkownik(uzytkownik_id);
+
+alter table osp_sprzet
+add constraint osp_sprzet_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+
+alter table osp_kalendarz
+add constraint osp_kalendarz_fk foreign key (jednostka_id) references osp_jednostka(jednostka_id);
+

@@ -1,0 +1,145 @@
+﻿@page
+@model PracaDyplomowa.Pages.Equipment.AddEquipmentModel
+@{
+}
+
+@using PracaDyplomowa.Models
+
+<body>
+    <ul class="nav nav-tabs mainNavTabs ">
+        <li class="p-2">
+            <span style="color: #fff; font-weight: 600">Dodaj sprzęt</span>
+        </li>
+
+        <li class=" " style="margin-left: auto; margin-right: 0; ">
+            @if (User.IsInRole(Models.User.UserType.Standard))
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Restricted/RestrictedMain">
+                    Wróć
+                </a>
+            }
+            else
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Equipment/EquipmentOverview">
+                    Wróć
+                </a>
+            }
+        </li>
+    </ul>
+
+    <div class="innerContainer2">
+
+        <form method="post" id="addEquipmentForm" class="displaySpinner" enctype="multipart/form-data">
+            <div id="addEquipmentWindow" class="m-3">
+                <div class="form-row justify-content-center " style="margin-top: 25px; margin-bottom:20px; width:100%">
+
+                    <div class="row formPanelContainer justify-content-center">
+
+                        <!--FIRST COLUMN-->
+                        <div class="fitstFrom2Column">
+                            <div class="fitstFrom2ColumnBtns">
+                                <div style="padding:3%">
+                                    <img class="" style="width: 100%;"
+                                         src="~/img/white/extinguisher-fill.svg">
+                                </div>
+                                <div class="input-group justify-content-center mt-1">
+                                    <input type="submit" class="btn btn-light btn-sm m-1" value="Zapisz"
+                                           asp-page-handler="AddEquipment" />
+                                </div>
+                            </div>
+                        </div>
+
+                            <!--SECOND COLUMN-->
+                        <div class="secondFrom2Column">
+
+                            <!--ALTERNATIVE 4 FIRST COLUMN-->
+                            <div class="alternativeElement">
+                                <input type="submit" class="btn btn-light btn-sm mr-2" value="Zapisz" />
+                            </div>
+                            <!--ALTERNATIVE-->
+
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Producent</label>
+                                <input type="text" class="form-control customFormInputv2 inputInline" id="DodajSprzetProducent"
+                                       asp-for="EquipmentObj.Producent" required>
+                            </div>
+
+
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Model</label>
+                                <input type="text" class="form-control customFormInputv2 inputInline" id="DodajSprzetModel"
+                                       asp-for="EquipmentObj.Model" required>
+                            </div>
+
+
+                            <div class="form-group mb-0 form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Nr seryjny</label>
+                                <input type="text" class="form-control customFormInputv2 inputInline" id="DodajSprzetSn"
+                                       asp-for="EquipmentObj.Sn" required>
+                            </div>
+
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Ilość</label>
+                                <input type="number" class="form-control customFormInputv2 inputInline" id="DodajSprzetIlosc"
+                                       asp-for="EquipmentObj.Ilosc" required>
+                            </div>
+
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Wartość</label>
+                                <input type="text" class="form-control customFormInputv2 inputInline" id="DodajSprzetWartosc"
+                                       asp-for="EquipmentObj.Wartosc" required>
+                            </div>
+
+
+                            <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeDataZakonczenia" class="mb-1 labelInline">Przegląd</label>
+                                <input type="date" class="form-control customFormInputv2 inputInline" id="DodajSprzetPrzeglad"
+                                       asp-for="EquipmentObj.AktualnoscBadan">
+
+                            </div>
+
+
+                            <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeDataZakonczenia" class="mb-1 labelInline">Zakupiono</label>
+                                <input type="date" class="form-control customFormInputv2 inputInline" id="DodajSprzetZakupiono"
+                                       asp-for="EquipmentObj.DataZakupu">
+
+                            </div>
+
+                            <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeDataZakonczenia" class="mb-1 labelInline">Wybierz typ</label>
+                                <select class="form-control customSelectInput inputInline" asp-for="EquipmentObj.Typ">
+                                    <option value="" disabled selected>Wybierz...</option>
+                                    <option value="@Models.Equipment.EquipmentType.Samochod">
+                                        @Models.Equipment.EquipmentType.Samochod
+                                    </option>
+                                    <option value="@Models.Equipment.EquipmentType.Sprzet">
+                                        @Models.Equipment.EquipmentType.Sprzet
+                                    </option>
+                                    <option value="@Models.Equipment.EquipmentType.Umundurowanie">
+                                        @Models.Equipment.EquipmentType.Umundurowanie
+                                    </option>
+                                </select>
+                            </div>
+
+
+                            <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajSprzetImg" class="mb-1 labelInline">Avatar</label>
+                                <input type="file" class="form-control customFormFileInput inputInline" id="DodajSprzetImg"
+                                       asp-for="uploadedLogo" accept=".gif,.jpg,.jpeg,.png">
+                            </div>
+
+                            <!--
+                                <div id="userAccountLogoInput">
+                                    <img id="logoImage" src="">
+                                </div>
+                            -->
+
+
+                        </div>
+                        </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>

@@ -1,0 +1,173 @@
+﻿@page
+@model PracaDyplomowa.Pages.Members.AddMemberModel
+@{
+}
+
+
+<ul class="nav nav-tabs mainNavTabs ">
+    <li class="p-2">
+        <span style="color:#fff;font-weight:600">Dodaj użytkownika</span>
+    </li>
+
+    <li class=" " style="margin-left: auto; margin-right: 0; ">
+        @if (User.IsInRole(Models.User.UserType.Standard))
+        {
+            <a class="nav-link goBackNavBarBtn" asp-page="/Restricted/RestrictedMain">
+                Wróć
+            </a>
+        }
+        else
+        {
+            <a class="nav-link goBackNavBarBtn" asp-page="/Members/MembersOverview">
+                Wróć
+            </a>
+        }
+    </li>
+</ul>
+
+<div class="innerContainer2">
+
+    <form method="post" id="addMemberForm" class="displaySpinner" enctype="multipart/form-data">
+        <div id="memberAddWindow" class="m-3">
+            <div class="form-row justify-content-center" style="margin-top: 40px; width:100% ">
+
+
+                <div class="row formPanelContainer  justify-content-center">
+
+                    <!--FIRST COLUMN-->
+                    <div class=" fitstFrom2Column">
+                        <div class="fitstFrom2ColumnBtns">
+                            <img class="" style="width: 100%; " src="~/img/white/pencil-square.svg">
+
+                            <div class="input-group justify-content-center mt-1">
+                                <input type="submit" class="btn btn-light btn-sm m-1" value="Zapisz"
+                                       asp-page-handler="AddUser" />
+                            </div>
+                        </div>
+                    </div>
+                        <!--SECOND COLUMN-->
+                    <div class="secondFrom2Column">
+
+                        <!--ALTERNATIVE 4 FIRST COLUMN-->
+                        <div class="alternativeElement">
+                            <input type="submit" class="btn btn-light btn-sm mr-2" value="Zapisz"
+                                   asp-page-handler="AddUser" />
+                        </div>
+                        <!--ALTERNATIVE-->
+
+                        <div class="form-group mb-0 form-inline" style="margin-top:-12px">
+                            <label for="userDataImieA" class="mb-1 labelInline">Imię</label>
+                            <input type="text" class="inputInline form-control customFormInputv2 "
+                                   id="userDataImieA" asp-for="UserInfo.Imie" required>
+                        </div>
+
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataNazwiskoA" class="mb-1 labelInline">Nazwisko</label>
+                            <input type="text" class="form-control customFormInputv2 inputInline"
+                                   id="userDataNazwiskoA" asp-for="UserInfo.Nazwisko" required>
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataUlicaA" class="mb-1 labelInline">Ulica</label>
+                            <input type="text" class="form-control customFormInputv2 inputInline"
+                                   id="userDataUlicaA" asp-for="UserInfo.Ulica" required>
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataMiejscowoscA" class="mb-1 labelInline">Miejscowość</label>
+                            <input type="text" class="form-control customFormInputv2 inputInline"
+                                   id="userDataMiejscowoscA" asp-for="UserInfo.Miejscowosc" required>
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataKodPocztA" class="mb-1 labelInline">Kod pocztowy</label>
+                            <input type="text" class="form-control customFormInputv2 inputInline"
+                                   id="userDataKodPocztA" asp-for="UserInfo.KodPocztowy" required>
+                        </div>
+
+
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataEmailA" class="mb-1 labelInline">E-mail</label>
+                            <input type="email" class="form-control customFormInputv2 inputInline"
+                                   id="userDataEmailA" asp-for="UserInfo.Email" required>
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataTelefonA" class="mb-1 labelInline">Telefon</label>
+                            <input type="text" class="form-control customFormInputv2 inputInline"
+                                   id="userDataTelefonA" asp-for="UserInfo.Telefon" required>
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataFunkcjaA" class="mb-1 labelInline">Funkcja</label>
+                            <input type="text" class="form-control customFormInputv2 inputInline"
+                                   id="userDataFunkcjaA" asp-for="UserInfo.Funkcja" >
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataDataWstapieniaA" class="mb-1 labelInline">Data Wstąpienia</label>
+                            <input type="date" class="form-control customFormInputv2 inputInline"
+                                   id="userDataDataWstapieniaA" asp-for="UserInfo.DataWstapienia" required>
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataStatusA" class="mb-1 labelInline">Status</label>
+                            <select class="form-control customSelectInput inputInline"
+                                    id="userDataStatusA" asp-for="UserInfo.Status" required>
+                                @if (@Model.UserInfo.Status == Models.StandbyStatus.Niedostepny)
+                                {
+                                    <option>@Models.StandbyStatus.Dostepny </option>
+                                    <option selected>@Models.StandbyStatus.Niedostepny </option>
+                                }
+                                else
+                                {
+                                    <option selected>@Models.StandbyStatus.Dostepny </option>
+                                    <option> @Models.StandbyStatus.Niedostepny </option>
+                                }
+
+                            </select>
+                        </div>
+
+                        <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataWaznoscBadanA" class="mb-1 labelInline">Ważność badań</label>
+                            <input type="date" class="form-control customFormInputv2 inputInline" id="userDataWaznoscBadanA"
+                                   asp-for="UserInfo.WaznoscBadan">
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userTypeA" class="mb-1 labelInline">Uprawnienia</label>
+                            <select class="form-control customSelectInput inputInline"
+                                    id="userTypeA" asp-for="UserInfo.TypKonta" required>
+                                <option selected>@Models.User.UserType.Standard </option>
+                                <option> @Models.User.UserType.Admin </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataHasloA" class="mb-1 labelInline">Tymczasowe hasło</label>
+                            <input type="text" class="form-control customFormInputv2 inputInline" id="userDataHasloA"
+                                   asp-for="UserInfo.Haslo" required>
+                        </div>
+
+
+                        <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataFileUploadE" class="mb-1 labelInline">Avatar</label>
+                            <input type="file" class="form-control customFormFileInput inputInline" id="userDataFileUploadE"
+                                   asp-for="uploadedLogo" accept=".gif,.jpg,.jpeg,.png">
+                        </div>
+
+                        <!--
+                        <div id="userAccountLogoInput">
+                            <img id="logoImage" src="">
+                        </div>
+                        -->
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>

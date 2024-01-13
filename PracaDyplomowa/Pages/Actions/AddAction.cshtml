@@ -1,0 +1,194 @@
+﻿@page
+@model PracaDyplomowa.Pages.Actions.AddActionModel
+@{
+}
+
+@using PracaDyplomowa.Models
+
+<!-- For Ajax-->
+@Html.AntiForgeryToken()
+
+
+<script src="https://cdn.jsdelivr.net/npm/ol@v7.1.0/dist/ol.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.1.0/ol.css">
+
+
+<body onload="onloadAddAction()">
+    <ul class="nav nav-tabs mainNavTabs ">
+        <li class="p-2">
+            <span style="color: #fff; font-weight: 600">Dodaj akcje</span>
+        </li>
+
+        <li class=" " style="margin-left: auto; margin-right: 0; ">
+            @if (User.IsInRole(Models.User.UserType.Standard))
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Restricted/RestrictedMain">
+                    Wróć
+                </a>
+            }
+            else
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Actions/ActionOverview">
+                    Wróć
+                </a>
+            }
+        </li>
+    </ul>
+
+    <div class="innerContainer2">
+
+        <form method="post" id="addActionForm" class="displaySpinner">
+            <div id="reminderViewWindow">
+                <div class="form-row justify-content-center " style="margin-top: 25px; margin-bottom:20px; width:100%">
+
+                    <div class="row formPanelContainer justify-content-center">
+
+                        <!--FIRST COLUMN-->
+                        <div class="fitstFrom2Column">
+                            <div class="fitstFrom2ColumnBtns">
+                                <div style="padding:3%">
+                                    <img class="" style="width: 100%; " src="~/img/white/cone-striped.svg">
+                                </div>
+                                <div class="input-group justify-content-center mt-1">
+                                    <input type="submit" class="btn btn-light btn-sm m-1" value="Zapisz" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--SECOND COLUMN-->
+                        <div class="secondFrom2Column">
+
+                            <!--ALTERNATIVE 4 FIRST COLUMN-->
+                            <div class="alternativeElement">
+                                <input type="submit" class="btn btn-light btn-sm mr-2" value="Zapisz" />
+                            </div>
+                            <!--ALTERNATIVE-->
+
+                           
+
+                            <div class="form-group  mb-3  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeTypZdarzenia" class="mb-1 labelInline">Typ zdarzenia</label>
+                                <select class="form-control customSelectInput inputInline" id="DodajAkcjeTypZdarzenia">
+                                    <option value="" disabled selected>Wybierz...</option>
+                                    <option value="@Models.ActionType.Pozar">
+                                        @Models.ActionType.Pozar
+                                    </option>
+                                    <option value="@Models.ActionType.ZdarzenieDrogowe">
+                                        @Models.ActionType.ZdarzenieDrogowe
+                                    </option>
+                                    <option value="@Models.ActionType.MiejsceZagrozenia">
+                                        @Models.ActionType.MiejsceZagrozenia
+                                    </option>
+                                    <option value="@Models.ActionType.FalszywyAlarm">
+                                        @Models.ActionType.FalszywyAlarm
+                                    </option>
+                                </select>
+                            </div>
+
+
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeDataZdarzenia" class="mb-1 labelInline">Rozpoczecie</label>
+                                <input type="date" class="form-control customFormInputv2 inputInline" id="DodajAkcjeDataZdarzenia"
+                                       value=@DateTime.Now.ToString("yyyy-MM-dd") required />
+                            </div>
+
+                            <div class="form-group  mb-3  form-inline " style="margin-top:-12px">
+                                <label for="EPrzypDataRozpoczecia" class="mb-1 labelInline"></label>
+                                <input type="time" class="form-control customFormInputv2 inputInline" id="DodajAkcjeCzasZdarzenia"
+                                       required>
+                            </div>
+
+                            <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeDataZakonczenia" class="mb-1 labelInline">Zakonczenie</label>
+                                <input type="date" class="form-control customFormInputv2 inputInline" id="DodajAkcjeDataZakonczenia"
+                                       value=@DateTime.Now.ToString("yyyy-MM-dd") required>
+
+                            </div>
+                            <div class="form-group  mb-3  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeCzasZakonczenia" class="mb-1 labelInline"></label>
+                                <input type="time" class="form-control customFormInputv2 inputInline" id="DodajAkcjeCzasZakonczenia"
+                                       required>
+                            </div>
+
+                            <div class="form-group mb-2  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeLokalizacja" class="mb-1 labelInline">Lokalizacja</label>
+                                <textarea type="text" class="form-control customFormInputv2 inputInline" id="DodajAkcjeLokalizacja"></textarea>
+                            </div>
+
+                            <div class="displayMapBtnDiv" style="margin-top:-26px">
+                                <a href="javascript:void('')" onclick="generateMap()">
+                                    Wyświetl mapę
+                                    <img class="menuBarTableImg" src="~/img/black/geo-alt-fill.svg">
+                                </a>
+                            </div>
+
+
+
+                            <div class="form-group  mb-1  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeLiczebnosc" class="mb-1 labelInline">Liczebność</label>
+                                <input type="text" class="form-control customFormInputv2 inputInline" id="DodajAkcjeLiczebnosc"
+                                       readonly>
+                            </div>
+
+
+                        <div class="form-group form-inline justify-content-center" >
+                            <label for="addActionUserTable" class="mb-1 mt-3" style="font-weight: 600; font-size:1.1em;cursor:pointer" 
+                            data-toggle="collapse" data-target="#addActionUserTableContainer" aria-expanded="false" aria-controls="addActionUserTableContainer">
+                            ⌄ Biorący udział </label>
+                             <div class=" collapse show" id="addActionUserTableContainer"  style=" width: 100%;">
+                                 @if(Model.ListOfUsers.Count == 0)
+                                    {
+                                        <p style="text-align:center;font-size:1.2em;color:#999">BRAK  </p>
+                                    }
+                                <table class="tableDefaultSm " id="addActionUserTable">
+                                    <thead></thead>
+                                    @{
+                                        for (int i = 0; i < Model.ListOfUsers.Count; i++)
+                                        {
+                                            if (@Model.ListOfUsers[i].Zatwierdzony == "n")
+                                            {
+                                                continue;
+                                            }
+                                            <tbody>
+                                                <tr class="" style=" cursor: pointer" onclick="addMemberActionTableOnClick(this)">
+
+                                                    <td data-label="Dodaj"  style="width:0" >
+                                                        <input type="checkbox" class="ActionCheckBox"
+                                                               style="display:none;" onclick="return false;" />
+                                                    </td>
+
+                                                    <td style="display:none;">
+                                                        <input type="hidden" value="@Model.ListOfUsers[i].UzytkownikId" readonly />
+                                                    </td>
+
+                                                    <td style="display:none;">
+                                                        <input type="hidden" value="@Model.ListOfUsers[i].Jednostka_id" readonly />
+                                                    </td>
+
+                                                    <td data-label="">
+                                                        @(CustomStr.Adjust(Model.ListOfUsers[i].Imie)+"  ")
+                                                        @CustomStr.Adjust(Model.ListOfUsers[i].Nazwisko)
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        }
+                                    }
+                                </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div id="mapContainer">
+            <div class="row mapBtns" >
+                <button  onclick="getLocation()">Wykryj lokalizację</button>
+                <button  onclick="closeMap()">X</button>
+            </div>
+            <div id="displayMap" class="map"> </div>
+        </div>
+
+    </div>
+</body>

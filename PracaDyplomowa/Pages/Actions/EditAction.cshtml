@@ -1,0 +1,252 @@
+﻿@page
+@model PracaDyplomowa.Pages.Actions.EditActionModel
+<!-- For Ajax-->
+@Html.AntiForgeryToken()
+
+<script src="https://cdn.jsdelivr.net/npm/ol@v7.1.0/dist/ol.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.1.0/ol.css">
+
+
+
+
+@{
+    string dateStart = "";
+    string timeStart = "";
+    string dateEnd = "";
+    string timeEnd = "";
+
+
+    try
+    {
+        string dateTimeStart = Model.ActionObj.CzasZdarzenia.ToString();
+        string[] dateTimeStartSplited = dateTimeStart.Split();
+        dateStart = Convert.ToDateTime(dateTimeStartSplited[0]).ToString("yyyy-MM-dd");
+        timeStart = dateTimeStartSplited[1];
+
+        string dateTimeEnd = Model.ActionObj.CzasZakonczenia.ToString();
+        string[] dateTimeEndSplited = dateTimeEnd.Split();
+        dateEnd = Convert.ToDateTime(dateTimeEndSplited[0]).ToString("yyyy-MM-dd");
+        timeEnd = dateTimeEndSplited[1];
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("EditAction Razor - String to date format conversion error: " + ex.Message);
+    }
+}
+
+@using PracaDyplomowa.Models
+
+
+
+<body onload="onloadEditAction()">
+
+    <input type="hidden" asp-for="selectedActionId" id="selectedActionIdForEdit" />
+
+    <ul class="nav nav-tabs mainNavTabs ">
+        <li class="nav-item ">
+            <a class="nav-link navItemMembers " id=""
+               asp-route-selectedActionId="@Model.ActionObj.Id"
+               asp-page="/Actions/ViewAction">Podgląd</a>
+        </li>
+        <li class="nav-item ">
+            <a class="nav-link navItemMembers active" id=""
+               asp-route-selectedActionId="@Model.ActionObj.Id"
+               asp-page="/Actions/EditAction">Edytuj</a>
+        </li>
+        <li class=" " style="margin-left: auto; margin-right: 0; ">
+            @if (User.IsInRole(Models.User.UserType.Standard))
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Restricted/RestrictedMain">
+                    Wróć
+                </a>
+            }
+            else
+            {
+                <a class="nav-link goBackNavBarBtn" asp-page="/Actions/ActionOverview">
+                    Wróć
+                </a>
+            }
+        </li>
+    </ul>
+
+
+    <div class="innerContainer2">
+
+        <form method="post" id="editActionForm" class="displaySpinner">
+            <div id="actionEditWindow">
+                <div class="form-row justify-content-center " style="margin-top: 25px; margin-bottom:20px; width:100%">
+
+                    <div class="row formPanelContainer justify-content-center">
+
+                        <!--FIRST COLUMN-->
+                        <div class="fitstFrom2Column">
+                            <div class="fitstFrom2ColumnBtns">
+                                <div style="padding:3%">
+                                    <img class="" style="width: 100%;" src="~/img/white/cone-striped.svg">
+                                </div>
+                                <div class="input-group justify-content-center mt-1">
+                                    <input type="submit" class="btn btn-light btn-sm m-1" value="Zapisz" />
+
+                                    <a class="btn btn-light btn-sm  m-1 " asp-route-ActionId=@Model.ActionObj.Id
+                                       asp-page-handler="DeleteAction" asp-page="" onclick="waitSpinner()">
+                                        &nbsp;Usuń&nbsp;
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--SECOND COLUMN-->
+                        <div class="secondFrom2Column">
+
+                            <!--ALTERNATIVE 4 FIRST COLUMN-->
+                            <div class="alternativeElement">
+                                <input type="submit" class="btn btn-light btn-sm mr-2" value="Zapisz" />
+
+                                <a class="btn btn-light btn-sm  m-1 " asp-route-ActionId=@Model.ActionObj.Id
+                                   asp-page-handler="DeleteAction" asp-page="" onclick="waitSpinner()">
+                                    &nbsp;Usuń&nbsp;
+                                </a>
+                            </div>
+                            <!--ALTERNATIVE-->
+
+                            <div class="form-group  mb-3  form-inline " style="margin-top:-12px">
+                                <label for="EdytujAkcjeTypZdarzenia" class="mb-1 labelInline">Typ zdarzenia</label>
+                                <select class="form-control customSelectInput inputInline" id="EdytujAkcjeTypZdarzenia" 
+                                asp-for="ActionObj.TypZdarzenia">
+                                    <option value="" disabled selected>Wybierz...</option>
+                                    <option value="@Models.ActionType.Pozar">
+                                        @Models.ActionType.Pozar
+                                    </option>
+                                    <option value="@Models.ActionType.ZdarzenieDrogowe">
+                                        @Models.ActionType.ZdarzenieDrogowe
+                                    </option>
+                                    <option value="@Models.ActionType.MiejsceZagrozenia">
+                                        @Models.ActionType.MiejsceZagrozenia
+                                    </option>
+                                    <option value="@Models.ActionType.FalszywyAlarm">
+                                        @Models.ActionType.FalszywyAlarm
+                                    </option>
+                                </select>
+                            </div>
+
+
+                            <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeDataZdarzenia" class="mb-1 labelInline">Rozpoczecie</label>
+                                <input type="date" class="form-control customFormInputv2 inputInline" id="EdytujAkcjeDataZdarzenia"
+                                       value=@dateStart required />
+                            </div>
+
+                            <div class="form-group  mb-3  form-inline " style="margin-top:-12px">
+                                <label for="EPrzypDataRozpoczecia" class="mb-1 labelInline"></label>
+                                <input type="time" class="form-control customFormInputv2 inputInline" id="EdytujAkcjeCzasZdarzenia"
+                                       value=@timeStart required>
+                            </div>
+
+                            <div class="form-group  mb-0  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeDataZakonczenia" class="mb-1 labelInline">Zakonczenie</label>
+                                <input type="date" class="form-control customFormInputv2 inputInline" id="EdytujAkcjeDataZakonczenia"
+                                       value=@dateEnd required>
+
+                            </div>
+                            <div class="form-group  mb-3  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeCzasZakonczenia" class="mb-1 labelInline"></label>
+                                <input type="time" class="form-control customFormInputv2 inputInline" id="EdytujAkcjeCzasZakonczenia"
+                                       value=@timeEnd required>
+                            </div>
+
+                            <div class="form-group mb-2  form-inline " style="margin-top:-12px">
+                                <label for="EdytujAkcjeLokalizacja" class="mb-1 labelInline">Lokalizacja</label>
+                                <textarea type="text" class="form-control customFormInputv2 inputInline" id="EdytujAkcjeLokalizacja"
+                                       asp-for="ActionObj.Lokalizacja"> </textarea>
+                            </div>
+
+                            <div class="displayMapBtnDiv" style="margin-top:-26px">
+                                <a href="javascript:void('')" onclick="generateMapEditSubPage()">
+                                    Wyświetl mapę
+                                    <img class="menuBarTableImg" src="~/img/black/geo-alt-fill.svg">
+                                </a>
+                            </div>
+
+
+                            <div class="form-group  mb-1  form-inline " style="margin-top:-12px">
+                                <label for="DodajAkcjeLiczebnosc" class="mb-1 labelInline">Liczebność</label>
+                                <input type="text" class="form-control customFormInputv2 inputInline" id="EdytujAkcjeLiczebnosc"
+                                       value="@Model.ListOfActionParticipants.Count" readonly>
+                            </div>
+
+
+
+                        <div class="form-group form-inline justify-content-center" >
+                            <label for="addActionUserTable" class="mb-1 mt-3" style="font-weight: 600; font-size:1.1em;cursor:pointer" 
+                            data-toggle="collapse" data-target="#editActionUserTableContainer" aria-expanded="false" aria-controls="editActionUserTableContainer">
+                            ⌄ Biorący udział </label>
+
+                             <div class=" collapse show" id="editActionUserTableContainer"  style=" width: 100%;">
+                                 @if(Model.ListOfUsers.Count == 0)
+                                    {
+                                        <p style="text-align:center;font-size:1.2em;color:#999">BRAK  </p>
+                                    }
+
+                                <table class="tableDefaultSm tableDefaultSmSingleTd " id="editActionUserTable">
+                                    <thead></thead>
+                                    @{
+
+                                        for (int i = 0; i < Model.ListOfUsers.Count; i++)
+                                        {
+                                            if (@Model.ListOfUsers[i].Zatwierdzony == "n")
+                                            {
+                                                continue;
+                                            }
+                                            var conditionClass  = Model.ListOfActionParticipants.Contains(Model.ListOfUsers[i].UzytkownikId) 
+                                                ? "selectedTableSmRow" : "";
+                                            <tbody>
+                                                <tr class="@conditionClass" style=" cursor: pointer; width: 0; " 
+                                                    onclick="addMemberActionEditOnClick(this)">
+
+                                                    <td  style="  width: 0" >
+                                                        @if (Model.ListOfActionParticipants.Contains(Model.ListOfUsers[i].UzytkownikId))
+                                                        {
+                                                            <input style="display:none;" type="checkbox" checked class="ActionCheckBox"
+                                                                   onclick="return false;" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <input style="display:none;" type="checkbox" class="ActionCheckBox"
+                                                                   onclick="return false;" />
+                                                        }
+                                                    </td>
+
+                                                    <td style="display:none;">
+                                                        <input type="hidden" value="@Model.ListOfUsers[i].UzytkownikId" readonly />
+                                                    </td>
+
+                                                    <td style="display:none;">
+                                                        <input type="hidden" value="@Model.ListOfUsers[i].Jednostka_id" readonly />
+                                                    </td>
+
+                                                    <td data-label="">
+                                                        @(CustomStr.Adjust(Model.ListOfUsers[i].Imie)+"  ")
+                                                        @CustomStr.Adjust(Model.ListOfUsers[i].Nazwisko)
+                                                    </td>
+
+                                                </tr>
+                                            </tbody>
+                                        }
+                                    }
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+        <div id="mapContainerEditSubPage">
+            <div class="row mapBtns">
+                <button onclick="getLocation()">Wykryj lokalizację</button>
+                <button onclick="closeMapEditSubPage()">X</button>
+            </div>
+            <div id="displayMapEditSubPage" class="map"> </div>
+        </div>
+    </div>
+</body>

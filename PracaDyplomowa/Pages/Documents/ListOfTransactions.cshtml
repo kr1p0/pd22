@@ -1,0 +1,103 @@
+﻿@page
+@model PracaDyplomowa.Pages.Documents.ListOfTransactionsModel
+@{
+}
+
+
+<ul class="nav nav-tabs mainNavTabs" >
+    <li class="nav-item ">
+        <a class="nav-link navItemMembers " id=""
+           asp-page="/Documents/ListOfActions">Generuj listę akcji</a>
+    </li>
+    <li class="nav-item active">
+        <a class="nav-link navItemMembers active" id=""
+           asp-page="/Documents/ListOfTransactions">Generuj listę transakcji</a>
+    </li>
+</ul>
+
+
+<div class="innerContainer2">
+
+    <form method="post" id="" class="displaySpinner" >
+    
+        <div id="" class="m-3">
+            <div class="form-row justify-content-center" style="margin-top: 40px; width:100% ">
+
+                <div class="row formPanelContainer  justify-content-center">
+
+                    <!--FIRST COLUMN-->
+                    <div class=" fitstFrom2Column">
+                        <div class="fitstFrom2ColumnBtns">
+                            <img class="" style="width: 100%; border-radius:6px" src="~/img/black/file-earmark-pdf-fill.svg">
+
+                            <div class="input-group justify-content-center mt-1">
+                                 <a  class="btn btn-light btn-sm m-1" href="javascript:void('')"
+                                    onclick="printTransactionsListBtnClick()"> Drukuj </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--SECOND COLUMN-->
+                    <div class="secondFrom2Column">
+
+                        <!--ALTERNATIVE 4 FIRST COLUMN-->
+                        <div class="alternativeElement">
+                            <input type="submit" class="btn btn-light btn-sm mr-2" value="Drukuj"
+                                   asp-page-handler="UpdateUserData" />
+                           
+                        </div>
+                        <!--ALTERNATIVE-->
+                         <div class="form-group mb-0 form-inline" style="margin-top:-12px">
+                            <label for="userDataImieE" class="mb-1 labelInline">Tytuł</label>
+                            <input type="text" class="inputInline form-control customFormInputv2 "
+                                   id="printTransactionsListTitle" >
+                        </div>
+
+                       <div class="form-group mb-0 form-inline" style="margin-top:-12px">
+                            <label for="userDataImieE" class="mb-1 labelInline">Transakcje od</label>
+                            <input type="date" class="inputInline form-control customFormInputv2 "
+                                   id="printTransactionsListDateFrom" >
+                        </div>
+
+                        <div class="form-group mb-0  form-inline " style="margin-top:-12px">
+                            <label for="userDataNazwiskoE" class="mb-1 labelInline">Transakcje do</label>
+                            <input type="date" class="form-control customFormInputv2 inputInline"
+                                   id="printTransactionsListDateTo">
+                        </div>
+
+                        
+                         <div class=" mb-3 mt-3 generateDocCheckBox">
+                                <div class="form-group  form-inline " style="margin-top:-12px;">
+                                    <label for="selectannouncementFieldColor" class="labelInline">Wpływy &nbsp;</label>
+                                    <input type="checkbox" class="form-group  inputInline" checked id="printTransactionsCheckBoxInflow" />
+                                </div>
+
+                                <hr />
+
+                                <div class="form-group  mb-3 form-inline pb-1" style="margin-top:-15px ;">
+                                    <label for="selectAnnouncementFontColor" class="labelInline">Wydatki &nbsp;</label>
+                                    <input type="checkbox"  class="form-group  inputInline" checked id="printTransactionsCheckBoxOutflow"  />
+                                </div>
+
+                                 <hr />
+
+                                <div class="form-group  mb-3 form-inline pb-1" style="margin-top:-15px ;">
+                                    <label for="selectAnnouncementFontColor" class="labelInline">Korekta +</label>
+                                    <input type="checkbox"  class="form-group  inputInline" checked id="printTransactionsCheckBoxAdjustmentPlus"  />
+                                </div>
+
+                                  <hr />
+
+                                  <div class="form-group  mb-3 form-inline pb-1" style="margin-top:-15px ;">
+                                    <label for="selectAnnouncementFontColor" class="labelInline">Korekta -</label>
+                                    <input type="checkbox"  class="form-group  inputInline" checked id="printTransactionsCheckBoxAdjustmentMinus"  />
+                                </div>
+                            </div>
+
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
